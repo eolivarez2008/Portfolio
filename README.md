@@ -7,12 +7,12 @@ Ce projet est en cours et sert à présenter mes projets, mes bulletins, certifi
 
 ## Présentation
 
-Ce site portfolio est un projet personnel développé en **PHP**, avec l’objectif de créer un site dynamique et modulaire.  
+Ce site portfolio est un projet personnel développé en **HTML**.  
 Il contient actuellement plusieurs sections :  
 
 - **Accueil** : une présentation de moi.  
 - **Projets** : présentation de mes projets scolaires et personnels.  
-- **Livret scolaire** : liste de mes **bulletins, certifications et attestations**.  
+- **Livret** : liste de mes **bulletins, certifications et attestations**.  
 - **Contact** : formulaire pour me contacter directement depuis le site.  
 
 Le site est en cours de développement et sera amélioré progressivement, avec une meilleure structure et un design plus professionnel.
@@ -21,7 +21,6 @@ Le site est en cours de développement et sera amélioré progressivement, avec 
 
 ## Technologies utilisées
 
-- PHP  
 - HTML5 / CSS3  
 - JavaScript
 
