@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Portfolio - Contact</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f0f4ff, #e8ecf7);
+      color: #333;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 80px auto;
+      padding: 40px;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    form div.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #444;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: all 0.3s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #2c3e50;
+      box-shadow: 0 4px 12px rgba(44, 62, 80, 0.3);
+      outline: none;
+      transform: translateY(-2px);
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: none;
+    }
+
+    button {
+      grid-column: 1 / -1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #2c3e50;
+      color: white;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    }
+
+    button:hover {
+      background: #1a242f;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .message {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+<div id="navbar"></div>
+<main>
+  <h1>📩 Me contacter</h1>
+  <form method="post">
+    <div>
+      <label for="nom">Nom</label>
+      <input type="text" id="nom" name="nom" placeholder="Votre nom" required>
+    </div>
+
+    <div>
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="exemple@mail.com" required>
+    </div>
+
+    <div class="full">
+      <label for="sujet">Sujet</label>
+      <input type="text" id="sujet" name="sujet" placeholder="Sujet du message" required>
+    </div>
+
+    <div class="full">
+      <label for="message">Message</label>
+      <textarea id="message" name="message" placeholder="Écrivez votre message..." required></textarea>
+    </div>
+
+    <button type="submit">Envoyer</button>
+  </form>
+</main>
+<script>
+  fetch('../components/navbar.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('navbar').innerHTML = data;
+    })
+    .catch(error => console.error('Erreur lors du chargement de la navbar:', error));
+</script>
+</body>
+</html>

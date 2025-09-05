@@ -1,0 +1,65 @@
+<div class="navbar" id="navbar">
+  <a href="about"><span class="icon">🧑</span>Présentation</a>
+  <a href="livret"><span class="icon">🎓</span>Livret scolaire</a>
+  <a href="projets"><span class="icon">📁</span>Projets</a>
+  <a href="contact"><span class="icon">✉️</span>Contact</a>
+</div>
+
+<style>
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 5%; /* plus simple que translateX */
+  width: 90%;
+  background: #2c3e50;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 15px 0;
+  z-index: 1000;
+  transition: transform 0.3s ease; /* utiliser transform pour cacher */
+}
+
+.navbar a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.navbar a:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-2px);
+}
+
+.navbar .icon {
+  font-size: 18px;
+}
+</style>
+
+<script>
+let lastScrollTop = 0;
+const navbar = document.getElementById('navbar');
+
+window.addEventListener('scroll', function() {
+  let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+  if(scrollTop > lastScrollTop + 5){
+    // scroll down → cacher vers le haut
+    navbar.style.transform = `translateY(-${navbar.offsetHeight}px)`;
+  } else if(scrollTop < lastScrollTop - 5){
+    // scroll up → montrer
+    navbar.style.transform = 'translateY(0)';
+  }
+
+  lastScrollTop = scrollTop;
+});
+</script>
