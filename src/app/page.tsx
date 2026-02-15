@@ -1,65 +1,145 @@
-import Image from "next/image";
+"use client";
+import { motion, Variants } from "framer-motion";
+import { Card } from "@/components/ui/Card";
+import { Code2, Box, Cpu, Terminal, Smartphone, Laptop } from "lucide-react";
+
+// Correction du Type : On définit explicitement les Variants
+const fadeInUp: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.6, ease: "easeOut" } 
+  },
+};
+
+const staggerContainer: Variants = {
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="relative min-h-screen w-full overflow-hidden bg-[#050505] text-white">
+      
+      {/* EFFET DE FOND "LIQUIDE" (Sans WebGL) */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[10%] right-[-5%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] opacity-50" />
+        <div className="absolute top-[30%] left-[20%] w-[300px] h-[300px] bg-emerald-500/5 rounded-full blur-[100px]" />
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-20">
+        
+        {/* HERO SECTION */}
+        <section className="mb-32">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            <motion.span 
+              variants={fadeInUp}
+              className="inline-block px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/5 text-blue-400 text-xs font-mono mb-6"
+            >
+              Apprenti Développeur & Designer 3D
+            </motion.span>
+            
+            <motion.h1 
+              variants={fadeInUp}
+              className="text-6xl md:text-8xl font-bold tracking-tighter mb-8 bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent"
+            >
+              Digital <br /> Architect.
+            </motion.h1>
+            
+            <motion.p 
+              variants={fadeInUp}
+              className="max-w-2xl text-zinc-400 text-xl leading-relaxed"
+            >
+              Élève en <span className="text-white font-medium">Bac Pro CIEL</span> de 17 ans. 
+              Je conçois des architectures frontend performantes et des univers 3D immersifs.
+            </motion.p>
+          </motion.div>
+        </section>
+
+        {/* STAT CARDS */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-32">
+          {[
+            { icon: Cpu, label: "Formation", val: "Bac Pro CIEL" },
+            { icon: Code2, label: "Spécialité", val: "Front-end Dev" },
+            { icon: Box, label: "Design", val: "3D Modeling" },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeInUp}
+            >
+              <Card className="group border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500">
+                <item.icon className="text-blue-500 mb-4 transition-transform group-hover:scale-110" size={24} />
+                <p className="text-zinc-500 text-xs font-mono uppercase tracking-widest">{item.label}</p>
+                <p className="text-xl font-semibold mt-1">{item.val}</p>
+              </Card>
+            </motion.div>
+          ))}
+        </section>
+
+        {/* BENTO GRID SKILLS */}
+        <section>
+          <h2 className="text-3xl font-bold mb-12 flex items-center gap-4">
+            Stack Technique <div className="h-[1px] flex-1 bg-zinc-800" />
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* Grand bloc 1 */}
+            <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="md:col-span-2">
+              <Card className="h-64 bg-gradient-to-br from-blue-600/10 to-transparent border-blue-500/20 flex flex-col justify-end p-8">
+                <h4 className="text-2xl font-bold">Next.js & React</h4>
+                <p className="text-zinc-500 text-sm mt-2">Interfaces réactives et optimisation maximale.</p>
+              </Card>
+            </motion.div>
+            
+            {/* Grand bloc 2 */}
+            <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="md:col-span-2">
+              <Card className="h-64 bg-gradient-to-br from-purple-600/10 to-transparent border-purple-500/20 flex flex-col justify-end p-8">
+                <h4 className="text-2xl font-bold">Blender 3D</h4>
+                <p className="text-zinc-500 text-sm mt-2">Modélisation d'assets et rendu studio.</p>
+              </Card>
+            </motion.div>
+
+            {/* Petits blocs */}
+            {[
+              { icon: Terminal, label: "TypeScript" },
+              { icon: Smartphone, label: "Responsive" },
+              { icon: Laptop, label: "Tailwind" },
+              { icon: Box, label: "Framer", animate: true },
+            ].map((skill, i) => (
+              <motion.div 
+                key={i} 
+                variants={fadeInUp} 
+                initial="hidden" 
+                whileInView="visible" 
+                viewport={{ once: true }}
+              >
+                <Card className="flex flex-col items-center justify-center py-8 hover:border-white/20 transition-colors">
+                  <motion.div
+                    animate={skill.animate ? { rotate: 360 } : {}}
+                    transition={skill.animate ? { duration: 8, repeat: Infinity, ease: "linear" } : {}}
+                  >
+                    <skill.icon size={24} className="text-zinc-500 mb-2" />
+                  </motion.div>
+                  <span className="text-sm font-mono text-zinc-400">{skill.label}</span>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+      </div>
+    </main>
   );
 }

@@ -1,26 +1,91 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #08090a; /* Un bleu-noir très profond */
+  --card: #0d0e10;
+  --border: rgba(255, 255, 255, 0.08);
+  --accent: #3b82f6;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* Le "Grain" qui donne de la texture */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+}
+
+/* Effet d'arrière-plan dynamique (nuages de couleur / liquide) */
+/* Un conteneur général pour les blobs */
+.gradient-background {
+  position: fixed;
+  inset: 0;
+  z-index: -10; /* Bien en dessous de tout */
+  overflow: hidden;
+  filter: blur(100px); /* Pour un effet diffus */
+  opacity: 0.3; /* Pour qu'ils ne soient pas trop dominants */
+}
+
+/* Chaque blob est une div avec un gradient et une animation */
+.gradient-blob {
+  position: absolute;
+  border-radius: 50%;
+  animation: moveBlob 20s infinite alternate; /* Mouvement lent */
+}
+
+.blob-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #3b82f6 0%, transparent 70%); /* Bleu */
+  top: 10%;
+  left: 5%;
+  animation-delay: 0s;
+}
+
+.blob-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #a855f7 0%, transparent 70%); /* Violet */
+  bottom: 20%;
+  right: 15%;
+  animation-delay: 5s;
+}
+
+.blob-3 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #f43f5e 0%, transparent 70%); /* Rose */
+  top: 50%;
+  left: 40%;
+  animation-delay: 10s;
+}
+
+@keyframes moveBlob {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(20px, -30px) scale(1.05);
+  }
+  50% {
+    transform: translate(-10px, 40px) scale(0.95);
+  }
+  75% {
+    transform: translate(30px, 10px) scale(1.1);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
 }
