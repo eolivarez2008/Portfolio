@@ -8,18 +8,42 @@ import { X, ExternalLink, Github, Star, GitFork, Layers, Loader2 } from "lucide-
 const PROJECTS_METADATA = [
   {
     id: 1,
-    repo: "TonPseudo/EcoSphere3D", // Chemin GitHub
-    title: "EcoSphere 3D",
-    category: "Modeling / Web",
-    longDesc: "Exploration de la fusion entre Next.js et la richesse visuelle de la 3D modélisée sous Blender.",
+    repo: "eolivarez2008/Abyssia",
+    title: "Abyssia",
+    category: "Développement jeux 2D",
+    longDesc: "Création d'un jeu vidéo 2D en pixel art, inspiré de l'esthétique rétro et des mécaniques de roguelike.",
     color: "from-blue-500/20",
   },
   {
     id: 2,
-    repo: "TonPseudo/CIEL-Dashboard",
-    title: "CIEL Dashboard",
-    category: "Ingénierie Système",
-    longDesc: "Interface de monitoring réseau développée pour visualiser les flux de sécurité du Bac Pro CIEL.",
+    repo: "eolivarez2008/Naruto-Chronicles",
+    title: "Naruto Chronicles",
+    category: "Développement site web",
+    longDesc: "Site de fans dédié à l'univers de Naruto, avec des sections sur les personnages, les arcs narratifs et la saga globale.",
+    color: "from-emerald-500/20",
+  },
+  {
+    id: 3,
+    repo: "eolivarez2008/Mon-Bac-Pro-CIEL",
+    title: "Mon Bac Pro CIEL",
+    category: "Développement site web",
+    longDesc: "Site web réalisé dans le cadre d'un projet scolaire pour la terminale. Il présente le bac professionnel CIEL et le lycée Cormontaigne.",
+    color: "from-emerald-500/20",
+  },
+  {
+    id: 4,
+    repo: "eolivarez2008/Portfolio",
+    title: "Portfolio Personnel",
+    category: "Développement site web",
+    longDesc: "Site web réalisé avec React et NextJS pour présenter mes projets, mon parcours et mes compétences en développement web/jeux vidéos et modélisation 3D.",
+    color: "from-emerald-500/20",
+  },
+  {
+    id: 5,
+    repo: "eolivarez2008/Stage-Cormon-VR",
+    title: "Stage Cormon VR",
+    category: "Développement site web 3D",
+    longDesc: "Ensemble de sites web réalisé dans le cadre d'un stage professionnel réalisé au lycée Louis Cormontaigne. Son but est la découverte de la 3D dans des sites internet.",
     color: "from-emerald-500/20",
   }
 ];
@@ -55,8 +79,8 @@ export default function ProjectsPage() {
   return (
     <main className="min-h-screen pt-32 px-6 lg:px-24 max-w-7xl mx-auto pb-20">
       <div className="mb-16">
-        <h1 className="text-5xl font-bold tracking-tight mb-4">Labs & Travaux</h1>
-        <p className="text-zinc-500 max-w-lg">Flux dynamique mixant métadonnées locales et API GitHub.</p>
+        <h1 className="text-5xl font-bold tracking-tight mb-4">Mes Projets</h1>
+        <p className="text-zinc-500 max-w-lg">Vous trouverez ci-dessous l’ensemble des projets que j’ai réalisés, aussi bien dans un cadre personnel que professionnel.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -66,7 +90,6 @@ export default function ProjectsPage() {
               <div className={`h-64 bg-gradient-to-br ${project.color} to-transparent relative flex items-center justify-center`}>
                 <Layers className="text-white/5 w-24 h-24 group-hover:scale-110 transition-transform duration-700" />
                 
-                {/* Badge GitHub Flottant */}
                 <div className="absolute top-4 right-4 flex gap-2">
                   <div className="px-2 py-1 bg-black/40 backdrop-blur-md rounded-md text-[10px] flex items-center gap-1 border border-white/10">
                     <Star size={10} className="text-yellow-500" /> {project.github.stargazers_count || 0}
@@ -87,7 +110,6 @@ export default function ProjectsPage() {
         ))}
       </div>
 
-      {/* MODAL (Identique à la précédente, mais utilisant project.github.html_url) */}
       <AnimatePresence>
         {selectedId && selectedProject && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
