@@ -23,14 +23,14 @@ Le site propose une expérience immersive basée sur une esthétique "High-Tech"
 
 ## Stack Technique
 
-Le projet exploite les dernières technologies du Web moderne pour garantir performance et fluidité :
+Le projet s’appuie sur un environnement **full-stack React moderne**, orienté performance, typage strict et déploiement optimisé Edge.
 
-- **Framework** : [Next.js 15+](https://nextjs.org/) - App Router
-- **Langage** : [TypeScript](https://www.typescriptlang.org/) - Typage fort pour un code robuste
-- **Styling** : [Tailwind CSS](https://tailwindcss.com/)- (Utilitaires CSS & Design responsive
-- **Animations** : [Framer Motion](https://www.framer.com/motion/) - Transitions fluides et layouts magiques
-- **Icons** : [Lucide React](https://lucide.dev/) - Set d'icônes épuré
-- **Déploiement** : [Vercel](https://vercel.com/) - Optimisation Edge et CI/CD
+- **Framework React full-stack** : [Next.js 15+](https://nextjs.org/) — App Router, Server Components, routing basé sur le système de fichiers, optimisation automatique des performances (SSR / SSG / ISR).
+- **Langage** : [TypeScript](https://www.typescriptlang.org/) — Typage statique avancé, sécurité à la compilation, meilleure maintenabilité du code.
+- **Styling utility-first** : [Tailwind CSS](https://tailwindcss.com/) — Design system cohérent, classes utilitaires, responsive natif et optimisation du bundle.
+- **Animations & micro-interactions** : [Framer Motion](https://www.framer.com/motion/) — Animations déclaratives, transitions fluides, layout animations et orchestration avancée.
+- **Icônes SVG optimisées** : [Lucide React](https://lucide.dev/) — Bibliothèque d’icônes minimaliste, tree-shaking compatible.
+- **Déploiement & infrastructure** : [Vercel](https://vercel.com/) — Déploiement continu (CI/CD), CDN global, optimisation Edge et gestion automatique des environnements.
 
 ---
 
