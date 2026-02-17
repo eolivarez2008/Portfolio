@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PORTFOLIO – Site web personnel
 
-## Getting Started
+Bienvenue sur le dépôt de mon portfolio personnel, une vitrine interactive de mes compétences en développement, modélisation 3D et infrastructures réseau.
 
-First, run the development server:
+Ce site est **hébergé avec Vercel** :  
+[https://eolivarez.site](https://eolivarez.site)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Présentation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Ce projet est bien plus qu'un simple CV en ligne. C'est un **Dashboard de navigation** conçu pour refléter mon parcours en **Bac Pro CIEL** (Cybersécurité, Informatique, Électronique et Réseaux). 
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Le site propose une expérience immersive basée sur une esthétique "High-Tech" et minimaliste, structurée autour de plusieurs modules clés :
 
-## Learn More
+- **Accueil** : Interface fluide avec arrière-plan dynamique "Liquid Blobs".
+- **Projets** : Galerie asymétrique exposant mes réalisations Dev et 3D.
+- **Parcours** : Une timeline interactive retraçant mon parcours scolaire et professionnel.
+- **A propos** : Présentation technique avec un système de "Infinite Marquee" pour les stacks technologiques.
+- **Contact** : Hub de communication permettant une prise de contact directe.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Stack Technique
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Le projet exploite les dernières technologies du Web moderne pour garantir performance et fluidité :
 
-## Deploy on Vercel
+- **Framework** : [Next.js 15+](https://nextjs.org/) (App Router)
+- **Langage** : [TypeScript](https://www.typescriptlang.org/) (Typage fort pour un code robuste)
+- **Styling** : [Tailwind CSS](https://tailwindcss.com/) (Utilitaires CSS & Design responsive)
+- **Animations** : [Framer Motion](https://www.framer.com/motion/) (Transitions fluides et layouts magiques)
+- **Icons** : [Lucide React](https://lucide.dev/) (Set d'icônes épuré)
+- **Déploiement** : [Vercel](https://vercel.com/) (Optimisation Edge et CI/CD)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Points Forts du Code
+
+- **Architecture Modulaire** : Composants réutilisables et structurés (`Navbar`, `Footer`, `ProjectCard`).
+- **Expérience Utilisateur (UX)** : Barre de navigation flottante avec indicateurs d'état, scrollbars personnalisées et effets de flou (Glassmorphism).
+- **Performance** : Optimisation des images et temps de chargement éclair grâce au rendu côté serveur (SSR).
+
+---
+
+## Auteur
+
+Développé par **Emilien Olivarez** – Étudiant en Bac Pro CIEL (ex-SN)  
+Lycée Louis de Cormontaigne, Metz
+
+---
+
+## Licence
+
+Ce projet est sous licence **MIT**.  
+Vous pouvez :
+
+- utiliser librement les fichiers,  
+- les modifier,  
+- les redistribuer,  
+- y compris pour un usage commercial,  
+
+à condition de respecter les termes de la licence MIT :  
+https://opensource.org/licenses/MIT
