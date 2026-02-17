@@ -34,14 +34,6 @@ Le projet exploite les dernières technologies du Web moderne pour garantir perf
 
 ---
 
-## Points Forts du Code
-
-- **Architecture Modulaire** : Composants réutilisables et structurés (`Navbar`, `Footer`, `ProjectCard`).
-- **Expérience Utilisateur (UX)** : Barre de navigation flottante avec indicateurs d'état, scrollbars personnalisées et effets de flou (Glassmorphism).
-- **Performance** : Optimisation des images et temps de chargement éclair grâce au rendu côté serveur (SSR).
-
----
-
 ## Auteur
 
 Développé par **Emilien Olivarez** – Étudiant en Bac Pro CIEL (ex-SN)  
