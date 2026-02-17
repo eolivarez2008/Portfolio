@@ -25,12 +25,12 @@ Le site propose une expérience immersive basée sur une esthétique "High-Tech"
 
 Le projet exploite les dernières technologies du Web moderne pour garantir performance et fluidité :
 
-- **Framework** : [Next.js 15+](https://nextjs.org/) (App Router)
-- **Langage** : [TypeScript](https://www.typescriptlang.org/) (Typage fort pour un code robuste)
-- **Styling** : [Tailwind CSS](https://tailwindcss.com/) (Utilitaires CSS & Design responsive)
-- **Animations** : [Framer Motion](https://www.framer.com/motion/) (Transitions fluides et layouts magiques)
-- **Icons** : [Lucide React](https://lucide.dev/) (Set d'icônes épuré)
-- **Déploiement** : [Vercel](https://vercel.com/) (Optimisation Edge et CI/CD)
+- **Framework** : [Next.js 15+](https://nextjs.org/) - App Router
+- **Langage** : [TypeScript](https://www.typescriptlang.org/) - Typage fort pour un code robuste
+- **Styling** : [Tailwind CSS](https://tailwindcss.com/)- (Utilitaires CSS & Design responsive
+- **Animations** : [Framer Motion](https://www.framer.com/motion/) - Transitions fluides et layouts magiques
+- **Icons** : [Lucide React](https://lucide.dev/) - Set d'icônes épuré
+- **Déploiement** : [Vercel](https://vercel.com/) - Optimisation Edge et CI/CD
 
 ---
 
