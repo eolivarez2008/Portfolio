@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 interface TiltCardProps {
@@ -15,6 +15,23 @@ export default function TiltCard({
   icon: Icon,
 }: TiltCardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Détection du tactile pour désactiver l'effet sur mobile
+  useEffect(() => {
+    const checkTouch = () => {
+      setIsMobile(
+        window.innerWidth < 1024 ||
+          "ontouchstart" in window ||
+          navigator.maxTouchPoints > 0,
+      );
+    };
+    checkTouch();
+    window.addEventListener("resize", checkTouch);
+    return () => window.removeEventListener("resize", checkTouch);
+  }, []);
+
+  // Configuration des valeurs de mouvement et ressort
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -22,41 +39,52 @@ export default function TiltCard({
   const xSpring = useSpring(x, springConfig);
   const ySpring = useSpring(y, springConfig);
 
+  // Calcul de la rotation selon la position de la souris
   const rotateX = useTransform(ySpring, [-0.5, 0.5], ["15deg", "-15deg"]);
   const rotateY = useTransform(xSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
 
+  // Mise à jour des coordonnées lors du mouvement
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || isMobile) return;
     const rect = containerRef.current.getBoundingClientRect();
     x.set((e.clientX - rect.left) / rect.width - 0.5);
     y.set((e.clientY - rect.top) / rect.height - 0.5);
   };
 
+  // Reset de la position quand la souris sort
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
   };
 
   return (
-    <div style={{ perspective: "1200px" }} className="w-full h-80">
+    <div style={{ perspective: "1200px" }} className="w-full h-auto lg:h-80">
+      {/* Animation de la carte principale */}
       <motion.div
         ref={containerRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        style={{
+          rotateX: isMobile ? 0 : rotateX,
+          rotateY: isMobile ? 0 : rotateY,
+          transformStyle: "preserve-3d",
+        }}
         whileTap={{ scale: 0.95 }}
         className="relative w-full h-full bg-zinc-900/40 border border-white/10 rounded-[2.5rem] p-8 overflow-hidden group hover:border-white/30 transition-colors duration-500"
       >
+        {/* Contenu interne avec effet de profondeur (Z-axis) */}
         <div
           style={{
-            transform: "translateZ(50px)",
+            transform: isMobile ? "none" : "translateZ(50px)",
             transformStyle: "preserve-3d",
           }}
           className="relative z-10 flex flex-col h-full"
         >
+          {/* Bloc icône stylisé */}
           <div className="bg-white/5 w-fit p-4 rounded-2xl mb-6 border border-white/10 group-hover:bg-white/10 transition-all">
             <Icon size={28} className="text-white" />
           </div>
+          {/* Textes et description */}
           <h3 className="text-2xl font-bold text-white mb-3 tracking-tighter uppercase italic">
             {title}
           </h3>
