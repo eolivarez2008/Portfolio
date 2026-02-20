@@ -1,149 +1,206 @@
 "use client";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Card } from "@/components/ui/Card";
-import { X, ExternalLink, Github, Star, GitFork, Layers, Loader2 } from "lucide-react";
 
-// Tes données "Design" manuelles
-const PROJECTS_METADATA = [
-  {
-    id: 1,
-    repo: "eolivarez2008/Abyssia",
-    title: "Abyssia",
-    category: "Développement jeux 2D",
-    longDesc: "Création d'un jeu vidéo 2D en pixel art, inspiré de l'esthétique rétro et des mécaniques de roguelike.",
-    color: "from-blue-500/20",
-  },
-  {
-    id: 2,
-    repo: "eolivarez2008/Naruto-Chronicles",
-    title: "Naruto Chronicles",
-    category: "Développement site web",
-    longDesc: "Site de fans dédié à l'univers de Naruto, avec des sections sur les personnages, les arcs narratifs et la saga globale.",
-    color: "from-emerald-500/20",
-  },
-  {
-    id: 3,
-    repo: "eolivarez2008/Mon-Bac-Pro-CIEL",
-    title: "Mon Bac Pro CIEL",
-    category: "Développement site web",
-    longDesc: "Site web réalisé dans le cadre d'un projet scolaire pour la terminale. Il présente le bac professionnel CIEL et le lycée Cormontaigne.",
-    color: "from-emerald-500/20",
-  },
-  {
-    id: 4,
-    repo: "eolivarez2008/Portfolio",
-    title: "Portfolio Personnel",
-    category: "Développement site web",
-    longDesc: "Site web réalisé avec React et NextJS pour présenter mes projets, mon parcours et mes compétences en développement web/jeux vidéos et modélisation 3D.",
-    color: "from-emerald-500/20",
-  },
-  {
-    id: 5,
-    repo: "eolivarez2008/Stage-Cormon-VR",
-    title: "Stage Cormon VR",
-    category: "Développement site web 3D",
-    longDesc: "Ensemble de sites web réalisé dans le cadre d'un stage professionnel réalisé au lycée Louis Cormontaigne. Son but est la découverte de la 3D dans des sites internet.",
-    color: "from-emerald-500/20",
-  }
-];
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  ExternalLink,
+  Server,
+  Shield,
+  Star,
+  Code2,
+  Github as GithubIcon,
+} from "lucide-react";
+import { GithubRepo } from "@/lib/github";
+
+interface ServiceStatus {
+  name: string;
+  status: number;
+}
 
 export default function ProjectsPage() {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [projectsData, setProjectsData] = useState<any[]>([]);
+  const [repos, setRepos] = useState<GithubRepo[]>([]);
+  const [services, setServices] = useState<ServiceStatus[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchAll() {
-      const data = await Promise.all(
-        PROJECTS_METADATA.map(async (p) => {
-          const res = await fetch(`https://api.github.com/repos/${p.repo}`);
-          const githubInfo = await res.json();
-          return { ...p, github: githubInfo };
-        })
-      );
-      setProjectsData(data);
-      setLoading(false);
-    }
-    fetchAll();
+    const loadData = async () => {
+      try {
+        const [repoRes, statusRes] = await Promise.all([
+          fetch("/api/github"),
+          fetch("/api/status"),
+        ]);
+        const repoData = await repoRes.json();
+        const statusData = await statusRes.json();
+        setRepos(repoData);
+        setServices(statusData.services || []);
+      } catch (err) {
+        console.error("Data fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
   }, []);
 
-  const selectedProject = projectsData.find(p => p.id === selectedId);
+  return (
+    <div className="bg-black text-white min-h-screen pt-40 pb-20 px-6 overflow-x-hidden">
+      <div className="max-w-6xl mx-auto">
+        {/* --- HERO INFRA CARD --- */}
+        <section className="relative overflow-hidden glass-card rounded-[2.5rem] p-8 md:p-14 mb-24">
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
+            <div className="lg:col-span-3 space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-zinc-300 text-[10px] font-mono tracking-widest uppercase">
+                <Server size={12} /> System Administrator
+              </div>
+              <h1 className="text-5xl md:text-7xl font-bold tracking-tighter leading-none">
+                Infrastructure <br />
+                <span className="text-zinc-400 italic font-light tracking-normal">
+                  Self-Hosted.
+                </span>
+              </h1>
+              <p className="text-zinc-300 text-lg leading-relaxed max-w-xl">
+                Gestion d&apos;un cloud privé sous Linux. De
+                l&apos;orchestration Docker aux tunnels Cloudflare, je déploie
+                mes propres services en environnement sécurisé.
+              </p>
 
-  if (loading) return (
-    <div className="h-screen flex items-center justify-center text-accent">
-      <Loader2 className="animate-spin" size={40} />
+              <div className="flex flex-wrap gap-2 pt-2">
+                {["Linux", "Docker", "Nginx", "Cloudflare"].map((tech) => (
+                  <span
+                    key={tech}
+                    className="px-3 py-1 bg-white/5 rounded-full text-[10px] font-mono text-zinc-400 border border-white/10"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Zone Status Monitoring */}
+            <div className="lg:col-span-2">
+              <div className="bg-black/60 border border-white/10 rounded-[2rem] p-6 shadow-2xl">
+                <h3 className="text-[10px] font-mono text-zinc-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
+                  <Shield size={10} className="text-white" /> Active_Monitoring
+                </h3>
+
+                <div className="relative h-[200px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]">
+                  <div className="flex flex-col gap-2 animate-marquee-vertical">
+                    {[...services, ...services].map((s, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between p-3 bg-white/5 border border-white/5 rounded-xl hover:border-white/20 transition-colors"
+                      >
+                        <span className="text-xs font-semibold text-zinc-200">
+                          {s.name}
+                        </span>
+                        <div
+                          className={`h-2 w-2 rounded-full ${s.status === 1 ? "bg-green-500 shadow-[0_0_10px_white] animate-pulse" : "bg-red-700"}`}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* --- SECTION PROJETS --- */}
+        <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-4 mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tighter italic uppercase text-white">
+            Projets_
+          </h2>
+          <span className="text-zinc-400 text-xs font-mono tracking-widest uppercase">
+            {repos.length} Repositories sur GitHub
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {loading
+            ? Array(6)
+                .fill(0)
+                .map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-72 bg-zinc-900/50 animate-pulse rounded-[2rem] border border-white/10"
+                  />
+                ))
+            : repos.map((repo) => <ProjectCard key={repo.id} repo={repo} />)}
+        </div>
+      </div>
+
+      <style jsx global>{`
+        @keyframes marquee-vertical {
+          0% {
+            transform: translateY(0);
+          }
+          100% {
+            transform: translateY(-50%);
+          }
+        }
+        .animate-marquee-vertical {
+          animation: marquee-vertical 30s linear infinite;
+        }
+      `}</style>
     </div>
   );
+}
+
+function ProjectCard({ repo }: { repo: GithubRepo }) {
+  const liveUrl = repo.homepage;
 
   return (
-    <main className="min-h-screen pt-32 px-6 lg:px-24 max-w-7xl mx-auto pb-20">
-      <div className="mb-16">
-        <h1 className="text-5xl font-bold tracking-tight mb-4">Mes Projets</h1>
-        <p className="text-zinc-500 max-w-lg">Vous trouverez ci-dessous l’ensemble des projets que j’ai réalisés, aussi bien dans un cadre personnel que professionnel.</p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="group relative h-full flex flex-col glass-card rounded-[2rem] p-8"
+    >
+      <div className="flex justify-between items-start mb-8">
+        <div className="p-3 bg-white/10 rounded-2xl group-hover:bg-white/20 transition-colors">
+          <Code2 size={22} className="text-white" />
+        </div>
+        <div className="flex gap-2">
+          <a
+            href={repo.html_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 text-zinc-400 hover:text-white transition-all"
+          >
+            <GithubIcon size={20} />
+          </a>
+          {liveUrl && (
+            <a
+              href={liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-zinc-400 hover:text-white transition-all"
+            >
+              <ExternalLink size={20} />
+            </a>
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {projectsData.map((project) => (
-          <motion.div key={project.id} layoutId={`card-${project.id}`} onClick={() => setSelectedId(project.id)}>
-            <Card className="group cursor-pointer p-0 overflow-hidden bg-[#0D0E10] border-white/5 hover:border-accent/40 transition-all duration-500">
-              <div className={`h-64 bg-gradient-to-br ${project.color} to-transparent relative flex items-center justify-center`}>
-                <Layers className="text-white/5 w-24 h-24 group-hover:scale-110 transition-transform duration-700" />
-                
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <div className="px-2 py-1 bg-black/40 backdrop-blur-md rounded-md text-[10px] flex items-center gap-1 border border-white/10">
-                    <Star size={10} className="text-yellow-500" /> {project.github.stargazers_count || 0}
-                  </div>
-                </div>
-              </div>
+      <h3 className="text-2xl font-bold mb-3 uppercase italic tracking-tighter text-white group-hover:translate-x-1 transition-transform">
+        {repo.name}
+      </h3>
 
-              <div className="p-8">
-                <div className="flex justify-between items-start">
-                  <span className="text-accent text-[10px] font-mono uppercase tracking-[0.2em]">{project.category}</span>
-                  <span className="text-zinc-600 text-[10px] font-mono italic">{project.github.language || "Mix"}</span>
-                </div>
-                <h3 className="text-2xl font-bold mt-2">{project.title}</h3>
-                <p className="text-zinc-500 text-sm mt-4 line-clamp-2">{project.github.description || project.longDesc}</p>
-              </div>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+      <p className="text-zinc-400 text-sm leading-relaxed mb-8 flex-grow group-hover:text-zinc-300 transition-colors">
+        {repo.description}
+      </p>
 
-      <AnimatePresence>
-        {selectedId && selectedProject && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedId(null)} className="absolute inset-0 bg-black/90 backdrop-blur-md" />
-            <motion.div layoutId={`card-${selectedId}`} className="relative w-full max-w-4xl bg-[#0D0E10] border border-white/10 rounded-2xl overflow-hidden z-10 grid grid-cols-1 md:grid-cols-2">
-               <div className={`h-64 md:h-auto bg-gradient-to-br ${selectedProject.color} to-black flex items-center justify-center`}>
-                  <Layers className="text-white/10 w-32 h-32" />
-               </div>
-               <div className="p-8 md:p-12">
-                  <h2 className="text-3xl font-bold mb-4">{selectedProject.title}</h2>
-                  <p className="text-zinc-400 mb-8">{selectedProject.longDesc}</p>
-                  
-                  <div className="grid grid-cols-2 gap-4 mb-8 text-xs font-mono">
-                    <div className="p-3 bg-white/5 rounded-lg border border-white/5">
-                      <p className="text-zinc-500 mb-1 uppercase">Stars</p>
-                      <p className="text-white">{selectedProject.github.stargazers_count}</p>
-                    </div>
-                    <div className="p-3 bg-white/5 rounded-lg border border-white/5">
-                      <p className="text-zinc-500 mb-1 uppercase">Forks</p>
-                      <p className="text-white">{selectedProject.github.forks_count}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <a href={selectedProject.github.html_url} target="_blank" className="flex-1 bg-white text-black text-center font-bold py-3 rounded-xl hover:bg-accent hover:text-white transition-all">
-                      Code Source
-                    </a>
-                  </div>
-               </div>
-               <button onClick={() => setSelectedId(null)} className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors"><X /></button>
-            </motion.div>
+      <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/10">
+        <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest bg-white/5 px-2 py-1 rounded">
+          {repo.language}
+        </span>
+        {repo.stargazers_count > 0 && (
+          <div className="flex items-center gap-1 text-[10px] font-mono text-zinc-300">
+            <Star size={10} className="fill-white text-white" />{" "}
+            {repo.stargazers_count}
           </div>
         )}
-      </AnimatePresence>
-    </main>
+      </div>
+    </motion.div>
   );
 }

@@ -1,90 +1,142 @@
 "use client";
-import { motion, Variants } from "framer-motion";
-import { Card } from "@/components/ui/Card";
-import { Code2, Box, Cpu, Terminal, Smartphone, Laptop } from "lucide-react";
 
-const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.6, ease: "easeOut" } 
-  },
-};
+import React from "react";
+import Link from "next/link";
+import { ArrowUpRight, Code2, Gamepad2, Layers, Cpu } from "lucide-react";
+import { motion } from "framer-motion";
+import TiltCard from "@/components/ui/TiltCard";
 
-const staggerContainer: Variants = {
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
+export default function Hero() {
+  const services = [
+    {
+      title: "Web Dev",
+      description:
+        "Interfaces modernes avec Next.js, React et des animations fluides.",
+      icon: Code2,
     },
-  },
-};
+    {
+      title: "Game Dev",
+      description:
+        "Conception d'expériences interactives et mécaniques sur Unity & C#.",
+      icon: Gamepad2,
+    },
+    {
+      title: "UI/UX Design",
+      description:
+        "Design minimaliste et efficace pour une expérience utilisateur optimale.",
+      icon: Layers,
+    },
+    {
+      title: "Systèmes CIEL",
+      description:
+        "Informatique réseaux et systèmes embarqués (Formation Bac Pro CIEL).",
+      icon: Cpu,
+    },
+  ];
 
-export default function Home() {
   return (
-    <main className="relative min-h-screen w-full overflow-hidden bg-[#050505] text-white">
-      
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[10%] right-[-5%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] opacity-50" />
-        <div className="absolute top-[30%] left-[20%] w-[300px] h-[300px] bg-emerald-500/5 rounded-full blur-[100px]" />
-      </div>
-
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-20">
-        
-        <section className="mb-32">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-          >
-            <motion.span 
-              variants={fadeInUp}
-              className="inline-block px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/5 text-blue-400 text-xs font-mono mb-6"
+    <div className="bg-black text-white min-h-screen w-full selection:bg-white selection:text-black">
+      {/* ===== HERO SECTION ===== */}
+      <section className="pt-32 md:pt-48 px-6 overflow-hidden">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="space-y-8 z-10">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-6xl md:text-8xl font-bold tracking-tighter leading-[0.9]"
             >
-              Apprenti Développeur & Designer 3D
-            </motion.span>
-            
-            <motion.h1 
-              variants={fadeInUp}
-              className="text-6xl md:text-8xl font-bold tracking-tighter mb-8 bg-gradient-to-b from-white to-white/40 bg-clip-text text-transparent"
-            >
-              Emilien <br /> OLIVAREZ.
+              Emilien <br />
+              <span className="text-zinc-500 italic font-light">OLIVAREZ</span>
             </motion.h1>
-            
-            <motion.p 
-              variants={fadeInUp}
-              className="max-w-2xl text-zinc-400 text-xl leading-relaxed"
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-lg md:text-xl text-zinc-400 max-w-xl leading-relaxed font-medium"
             >
-              Élève en <span className="text-white font-medium">Bac Pro CIEL</span> de 17 ans. 
-              Je me forme en autodidacte au développement web, développement de jeux vidéos et à la modélisation 3D, avec une passion pour les expériences interactives et visuellement marquantes.
+              Élève en Bac Pro CIEL. Je me forme au développement web et aux
+              systèmes embarqués avec une passion pour les interfaces
+              minimalistes.
             </motion.p>
-          </motion.div>
-        </section>
 
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-32">
-          {[
-            { icon: Cpu, label: "Formation", val: "Bac Pro CIEL" },
-            { icon: Code2, label: "Spécialité", val: "Front-end Dev" },
-            { icon: Box, label: "Design", val: "3D Modeling" },
-          ].map((item, i) => (
             <motion.div
-              key={i}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeInUp}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-wrap gap-4 pt-4"
             >
-              <Card className="group border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-500">
-                <item.icon className="text-blue-500 mb-4 transition-transform group-hover:scale-110" size={24} />
-                <p className="text-zinc-500 text-xs font-mono uppercase tracking-widest">{item.label}</p>
-                <p className="text-xl font-semibold mt-1">{item.val}</p>
-              </Card>
+              <Link
+                href="/projects"
+                className="bg-white text-black px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-all text-sm uppercase tracking-widest flex items-center gap-2 group"
+              >
+                Projets{" "}
+                <ArrowUpRight
+                  size={18}
+                  className="group-hover:rotate-45 transition-transform"
+                />
+              </Link>
+              <Link
+                href="/contact"
+                className="bg-zinc-900/50 border border-white/10 px-8 py-4 rounded-2xl font-bold hover:bg-white/10 transition-all text-sm uppercase tracking-widest"
+              >
+                Contact
+              </Link>
             </motion.div>
-          ))}
-        </section>
+          </div>
 
-      </div>
-    </main>
+          {/* ===== FLOATING TESTIMONIALS ===== */}
+          <div className="relative h-[280px] md:h-[300px] lg:h-[320px] w-full hidden sm:block">
+            <blockquote
+              className="absolute top-3 left-0 bg-gradient-to-br from-white/5 to-white/10 
+                         border border-white/10 text-base text-white p-6 rounded-2xl 
+                         shadow-2xl w-80 rotate-[-4deg] backdrop-blur-md"
+            >
+              “La parole ne coûte rien. Montrez-moi le code.”
+              <footer className="text-right mt-4 text-sm text-gray-400 font-mono">
+                – Linus Torvalds
+              </footer>
+            </blockquote>
+
+            <blockquote
+              className="absolute bottom-6 right-0 bg-gradient-to-br from-white/5 to-white/10 
+                         border border-white/10 text-base text-white p-6 rounded-2xl 
+                         shadow-2xl w-80 rotate-[4deg] backdrop-blur-md"
+            >
+              “Le design est la façon dont ça fonctionne.”
+              <footer className="text-right mt-4 text-sm text-gray-400 font-mono">
+                – Steve Jobs
+              </footer>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== SERVICES SECTION ===== */}
+      <section className="py-32 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col mb-20">
+            <h2 className="text-[10px] font-mono text-zinc-600 uppercase tracking-[0.5em] mb-4">
+              Expertise_
+            </h2>
+            <p className="text-5xl md:text-6xl font-extrabold tracking-tighter uppercase italic">
+              Skills & Services
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {services.map((service, index) => (
+              <TiltCard
+                key={index}
+                title={service.title}
+                description={service.description}
+                icon={service.icon}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

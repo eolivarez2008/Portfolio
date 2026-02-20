@@ -1,23 +1,29 @@
 # PORTFOLIO – Site web personnel
 
-Bienvenue sur le dépôt de mon portfolio personnel, une vitrine interactive de mes compétences en développement, modélisation 3D et infrastructures réseau.
+Bienvenue sur le dépôt de mon **portfolio personnel**. Conçu comme une interface high-tech minimaliste, ce site est le hub central de mes réalisations en développement, infrastructure et cybersécurité.
 
-Ce site est **hébergé avec Vercel** :  
-[https://eolivarez.site](https://eolivarez.site)
-
----
-
-## Présentation
-
-Ce projet est bien plus qu'un simple CV en ligne. C'est un **Dashboard de navigation** conçu pour refléter mon parcours en **Bac Pro CIEL** (Cybersécurité, Informatique, Électronique et Réseaux). 
+Ce projet est bien plus qu'un simple CV en ligne. C'est un **Dashboard de navigation** conçu pour refléter mon parcours en **Bac Pro CIEL** (Cybersécurité, Informatique, Électronique et Réseaux).
 
 Le site propose une expérience immersive basée sur une esthétique "High-Tech" et minimaliste, structurée autour de plusieurs modules clés :
 
-- **Accueil** : Interface fluide avec arrière-plan dynamique "Liquid Blobs".
-- **Projets** : Galerie asymétrique exposant mes réalisations Dev et 3D.
+- **Accueil** : Interface fluide
+- **Projets** : Galerie asymétrique exposant mes réalisations
 - **Parcours** : Une timeline interactive retraçant mon parcours scolaire et professionnel.
 - **A propos** : Présentation technique avec un système de "Infinite Marquee" pour les stacks technologiques.
 - **Contact** : Hub de communication permettant une prise de contact directe.
+
+---
+
+## Déploiement & Architecture
+
+Le projet est entièrement containerisé et repose sur une architecture micro-services gérée par **Docker Compose**.
+
+- **Infrastructure** : Docker & Docker Compose
+- **Serveur Web** : Nginx (Alpine)
+- **Tunneling & Sécurité** : Cloudflare Tunnel (Zero Trust)
+- **CI/CD** : Déploiement via Git & Docker Compose
+
+**Accès au site :** [https://eolivarez.site](https://eolivarez.site)  
 
 ---
 
@@ -30,7 +36,9 @@ Le projet s’appuie sur un environnement **full-stack React moderne**, orienté
 - **Styling utility-first** : [Tailwind CSS](https://tailwindcss.com/) — Design system cohérent, classes utilitaires, responsive natif et optimisation du bundle.
 - **Animations & micro-interactions** : [Framer Motion](https://www.framer.com/motion/) — Animations déclaratives, transitions fluides, layout animations et orchestration avancée.
 - **Icônes SVG optimisées** : [Lucide React](https://lucide.dev/) — Bibliothèque d’icônes minimaliste, tree-shaking compatible.
-- **Déploiement & infrastructure** : [Vercel](https://vercel.com/) — Déploiement continu (CI/CD), CDN global, optimisation Edge et gestion automatique des environnements.
+- **Web analytics** : [Umami](https://umami.is/) — Solution open-source d’analyse d’audience, légère et respectueuse de la vie privée, auto-hébergée.
+- **Hébergement & Infra** : [Docker](https://www.docker.com/) — Containerisation du site statique avec un serveur Nginx optimisé, auto-hébergé sur une VM dédiée.
+- **Réseau & Sécurité** : [Cloudflare Tunnel](https://www.cloudflare.com/products/tunnel/) — Exposition sécurisée du service sans ouverture de ports (Zero Trust), protection contre les attaques et gestion automatique du certificat SSL.
 
 ---
 
@@ -46,10 +54,10 @@ Lycée Louis de Cormontaigne, Metz
 Ce projet est sous licence **MIT**.  
 Vous pouvez :
 
-- utiliser librement les fichiers,  
-- les modifier,  
-- les redistribuer,  
-- y compris pour un usage commercial,  
+- utiliser librement les fichiers,
+- les modifier,
+- les redistribuer,
+- y compris pour un usage commercial,
 
 à condition de respecter les termes de la licence MIT :  
 https://opensource.org/licenses/MIT
