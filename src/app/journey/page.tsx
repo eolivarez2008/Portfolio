@@ -46,15 +46,16 @@ export default function JourneyPage() {
           className="space-y-4 max-w-3xl mx-auto"
         >
           <p className="text-zinc-400 text-sm md:text-base leading-relaxed font-medium">
-            Mon histoire a débuté en Moselle, où j'ai effectué mes premières
-            années de collège à <span className="text-white">Rombas</span> au
-            collège <span className="text-white">Julie Daubié</span>. C'est en
-            classe de 4ème que j'ai rejoint{" "}
+            Mon histoire a débuté en Moselle, où j&apos;ai effectué mes
+            premières années de collège à{" "}
+            <span className="text-white">Rombas</span> au collège{" "}
+            <span className="text-white">Julie Daubié</span>. C&apos;est en
+            classe de 4ème que j&apos;ai rejoint{" "}
             <span className="text-white">Metz</span> et le collège{" "}
             <span className="text-white">Jean Rostand</span>.
           </p>
           <p className="text-zinc-400 text-sm md:text-base leading-relaxed font-medium">
-            Aujourd'hui, je suis élève en{" "}
+            Aujourd&apos;hui, je suis élève en{" "}
             <span className="text-white">Bac Pro CIEL</span> au lycée{" "}
             <span className="text-white">Louis de Cormontaigne</span> à Metz.
           </p>
@@ -98,7 +99,7 @@ export default function JourneyPage() {
                 exit={{ opacity: 0, y: -10 }}
                 className={`relative flex flex-col md:flex-row items-start md:items-center w-full ${index % 2 === 0 ? "md:flex-row-reverse" : ""}`}
               >
-                {/* Icône de l'étape */}
+                {/* Icône de l&apos;étape */}
                 <div className="absolute left-[31px] md:left-1/2 -translate-x-1/2 w-10 h-10 rounded-xl bg-white flex items-center justify-center z-20 shadow-[0_0_15px_rgba(255,255,255,0.3)] shrink-0">
                   <div className="text-black">
                     {item.type === "work" ? (

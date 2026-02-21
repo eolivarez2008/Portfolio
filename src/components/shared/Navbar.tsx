@@ -15,11 +15,10 @@ import {
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  // On supprime le state "mounted" qui bloque le rendu serveur
   const pathname = usePathname();
 
   useEffect(() => {
-    setMounted(true);
     const handleResize = () => {
       if (window.innerWidth >= 1024) setIsOpen(false);
     };
@@ -35,19 +34,18 @@ export function Navbar() {
     { name: "CONTACT", href: "/contact", icon: <MessagesSquare size={18} /> },
   ];
 
-  if (!mounted) return null;
-
   return (
     <nav className="fixed top-7 left-1/2 -translate-x-1/2 z-[1000] w-[90%] max-w-[1200px] pointer-events-none font-sans">
       <div className="flex flex-col items-center justify-center w-full">
         <div className="relative w-full lg:w-auto bg-black/40 backdrop-blur-xl border border-white/10 pointer-events-auto rounded-[2rem] px-4 py-2 lg:px-2 lg:py-2">
           {/* HEADER MOBILE */}
           <div className="flex items-center justify-between w-full lg:hidden h-10 px-4">
-            <span className="text-white font-bold tracking-tighter text-xs uppercase opacity-80">
+            <span className="text-white font-bold tracking-tighter text-[10px] uppercase opacity-80">
               BAC PRO CIEL
             </span>
             <button
               onClick={() => setIsOpen(!isOpen)}
+              aria-label="Menu" // ajout accessibilité pour PageSpeed
               className="text-white p-2 hover:bg-white/5 rounded-full transition-colors active:scale-95"
             >
               {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -62,7 +60,8 @@ export function Navbar() {
               ${
                 isOpen
                   ? "max-h-[500px] opacity-100 pt-2 pb-2"
-                  : "max-h-0 opacity-0 lg:max-h-none lg:opacity-100 invisible lg:visible"
+                  : "max-h-0 opacity-0 lg:max-h-none lg:opacity-100 lg:visible"
+                // on retire le invisible pour que le serveur l'affiche en desktop
               }
             `}
           >
