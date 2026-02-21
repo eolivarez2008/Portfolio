@@ -12,15 +12,15 @@ interface KumaHeartbeat {
 
 // Mapping des IDs services
 const ID_MAP: Record<string, string> = {
-  "1": "Dockge",
+  "1": "Portfolio",
   "2": "Bac Pro CIEL",
-  "3": "n8n",
-  "4": "Naruto",
-  "5": "Portainer",
-  "6": "Portfolio",
+  "3": "Naruto",
+  "4": "Portainer",
+  "5": "n8n",
+  "6": "Uptime Kuma",
   "7": "Stirling",
-  "8": "Uptime Kuma",
-  "9": "Vaultwarden",
+  "8": "Vaultwarden",
+  "9": "Dockge",
 };
 
 export async function GET() {

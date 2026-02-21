@@ -60,7 +60,7 @@ npm install
 
 3. Configuration des variables d'environnement
 
-Création du fichier .env.local à la racine du projet
+Création du fichier .env à la racine du projet
 
 ```bash
 # Cloudflare Turnstile (Captcha)

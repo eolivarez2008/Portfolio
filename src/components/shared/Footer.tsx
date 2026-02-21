@@ -1,5 +1,15 @@
+"use client";
+
 import Link from "next/link";
-import { Command, ArrowRight, Layout, Scale, Copyright } from "lucide-react";
+import {
+  Command,
+  ArrowRight,
+  Layout,
+  Scale,
+  Copyright,
+  Target,
+} from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 const FOOTER_LINKS = {
   navigation: [
@@ -66,6 +76,12 @@ export function Footer() {
                   <li key={link.name}>
                     <Link
                       href={link.href}
+                      onClick={() =>
+                        trackEvent("footer-nav-click", {
+                          target: link.name.toLowerCase(),
+                        })
+                      }
+                      aria-label={`Aller sur la page ${link.name}`}
                       className="group flex items-center gap-2 text-[12px] text-zinc-500 hover:text-white transition-all w-fit"
                     >
                       <ArrowRight
@@ -97,6 +113,12 @@ export function Footer() {
                   <li key={link.name}>
                     <Link
                       href={link.href}
+                      onClick={() =>
+                        trackEvent("footer-legal-click", {
+                          target: link.name.toLowerCase(),
+                        })
+                      }
+                      aria-label={`Aller sur la page ${link.name}`}
                       className="group flex items-center gap-2 text-[12px] text-zinc-500 hover:text-white transition-all w-fit"
                     >
                       <ArrowRight
