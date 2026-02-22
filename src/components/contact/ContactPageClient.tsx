@@ -30,6 +30,7 @@ export default function ContactPageClient() {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const MAX_CHARS = 1000;
 
+  // gestion envoi formulaire + check captcha et tracking
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -86,6 +87,7 @@ export default function ContactPageClient() {
 
   return (
     <main className="min-h-screen pt-32 pb-32 px-6 max-w-4xl mx-auto text-white selection:bg-white selection:text-black">
+      {/* Affichage titre page et infos de base (mail, ville) */}
       <section className="text-center mb-16 space-y-8">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -94,6 +96,16 @@ export default function ContactPageClient() {
         >
           Contact<span className="text-zinc-800">_</span>
         </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-zinc-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed"
+        >
+          Un projet en tête, une question technique ou juste envie de discuter
+          infra et dev ? Mon terminal est toujours ouvert. Remplis le
+          formulaire, je vous réponds dans les plus brefs délais.
+        </motion.p>
 
         <div className="flex flex-wrap justify-center gap-4">
           <div className="flex items-center gap-3 bg-zinc-900/50 border border-white/5 px-5 py-3 rounded-2xl">
@@ -110,9 +122,9 @@ export default function ContactPageClient() {
           </div>
         </div>
       </section>
-
       <section className="relative">
         <AnimatePresence mode="wait">
+          {/* Feedback visuel quand message bien envoyé */}
           {status === "success" && (
             <motion.div
               initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
@@ -131,7 +143,7 @@ export default function ContactPageClient() {
               </div>
             </motion.div>
           )}
-
+          {/* Feedback visuel si bug ou erreur serveur */}
           {status === "error" && (
             <motion.div
               initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
@@ -162,7 +174,7 @@ export default function ContactPageClient() {
             </motion.div>
           )}
         </AnimatePresence>
-
+        {/* Structure du formulaire (nom, mail, message) */}
         <div className="glass-card p-8 md:p-12 rounded-[2.5rem] border border-white/5 bg-zinc-900/5">
           <form ref={formRef} onSubmit={handleSubmit} className="space-y-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -199,13 +211,14 @@ export default function ContactPageClient() {
                     name="email"
                     required
                     type="email"
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                    title="Veuillez entrer une adresse e-mail valide (ex: jean@exemple.com)"
                     placeholder="jean@exemple.com"
                     className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-14 pr-6 py-5 text-sm outline-none focus:border-white/30 transition-all"
                   />
                 </div>
               </div>
             </div>
-
             <div className="space-y-3">
               <div className="flex justify-between items-end px-1">
                 <label className="text-[11px] uppercase tracking-[0.2em] text-zinc-400 font-black italic">
@@ -233,7 +246,7 @@ export default function ContactPageClient() {
                 />
               </div>
             </div>
-
+            {/* Zone validation captcha et bouton envoi */}
             <div className="flex flex-col items-center gap-8 pt-4">
               <Turnstile
                 ref={turnstileRef}

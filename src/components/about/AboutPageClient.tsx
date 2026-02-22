@@ -20,18 +20,31 @@ export default function AboutPageClient() {
           <div className="lg:col-span-7 space-y-6 md:space-y-8 text-zinc-400 text-base md:text-lg leading-relaxed">
             <p>
               Depuis que je suis petit, j&apos;ai toujours été fasciné par la
-              manière dont les choses fonctionnent. Ce qui a commencé par une
-              simple curiosité devant l&apos;ordinateur familial s&apos;est
-              transformé en une véritable passion en classe de 3ème.
+              manière dont les choses fonctionnent. Ce qui était juste de la
+              curiosité au début sur l&apos;ordinateur de la maison est devenu
+              une vraie passion. J&apos;ai vite arrêté de juste
+              &ldquo;utiliser&rdquo; les logiciels pour essayer de comprendre
+              comment ils sont construits.
             </p>
+
             <p>
-              Aujourd&apos;hui, à 17 ans, je suis en Terminale Bac Pro CIEL et
-              mon quotidien est de coder sur le{" "}
-              <span className="text-white font-medium italic border-b border-white/10">
+              Aujourd&apos;hui, à 17 ans, je fais avec ce que j&apos;ai sous la
+              main. Je code et je gère mon serveur sur le
+              <span className="text-white font-medium italic border-b border-white/10 ml-1">
                 PC Windows de la région
               </span>
-              . J&apos;ai appris que la puissance de calcul ne remplace jamais
-              la persévérance.
+              . Ça m&apos;a appris un truc important : il n&apos;a pas besoin
+              d&apos;une machine de guerre à 3000€ pour faire tourner des
+              projets sérieux. C&apos;est la débrouille et l&apos;optimisation
+              qui comptent le plus.
+            </p>
+
+            <p>
+              Mon quotidien, c&apos;est de tester des trucs sur mon serveur
+              Linux, de casser des configs et de les réparer. Je ne prétends pas
+              tout savoir, je découvre encore plein de trucs chaque jour, mais
+              c&apos;est justement ça qui me plaît : apprendre par moi-même et
+              voir mes services tourner en prod sur ma propre infra.
             </p>
           </div>
 
@@ -105,6 +118,8 @@ export default function AboutPageClient() {
                     alt={tech.name}
                     width={40}
                     height={40}
+                    sizes="(max-width: 768px) 32px, 40px"
+                    priority={false}
                     className="transition-transform duration-300 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 flex items-end justify-center pb-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -125,11 +140,12 @@ export default function AboutPageClient() {
           <div className="relative z-10 h-full flex flex-col justify-between items-start">
             <div className="mb-8">
               <h3 className="text-2xl md:text-3xl font-bold italic uppercase mb-4 tracking-tighter">
-                Créations & Réalisations
+                Mes Réalisations
               </h3>
               <p className="text-zinc-500 text-sm md:text-base leading-relaxed max-w-md">
                 De l&apos;expérimentation 3D avec WebGL au développement sur
-                Unity. Chaque projet est une opportunité d&apos;apprendre.
+                Unity. Chaque projet est une opportunité d&apos;en apprendre
+                toujours plus.
               </p>
             </div>
             <Link
@@ -155,9 +171,9 @@ export default function AboutPageClient() {
             Discipline
           </h3>
           <p className="text-zinc-500 text-[12px] md:text-[13px] leading-relaxed italic">
-            &rdquo;La musculation m&apos;a appris que la progression est une
-            question de répétition. C&apos;est la même chose devant un écran :
-            build, fail, repeat.&rdquo;
+            &rdquo;Pratiquant de musculation depuis juin 2025. Plus qu&apos;un
+            loisir, une discipline quotidienne qui forge ma capacité à relever
+            des défis, qu&apos;ils soient physiques ou technologiques.&rdquo;
           </p>
         </div>
       </section>

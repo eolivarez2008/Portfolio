@@ -10,13 +10,17 @@ interface KumaHeartbeat {
   ping?: number;
 }
 
-// Mapping des IDs services
+// Ajout de l'interface de réponse pour le typage strict
+interface UptimeKumaResponse {
+  heartbeatList: Record<string, KumaHeartbeat[]>;
+}
+
+// Mapping des IDs services (Uptime Kuma)
 const ID_MAP: Record<string, string> = {
   "1": "Portfolio",
   "2": "Bac Pro CIEL",
   "3": "Naruto",
   "4": "Portainer",
-  "5": "n8n",
   "6": "Uptime Kuma",
   "7": "Stirling",
   "8": "Vaultwarden",
@@ -28,27 +32,37 @@ export async function GET() {
     const kumaUrl = process.env.UPTIME_KUMA_URL;
 
     if (!kumaUrl) {
+      console.error(
+        "[Status API] URL Uptime Kuma manquante dans les variables d'env",
+      );
       return NextResponse.json(
-        { services: [], error: "Configuration manquante (URL)" },
+        { services: [], error: "Configuration serveur incomplète" },
         { status: 500 },
       );
     }
 
-    // Récupération data via Uptime Kuma
+    // Récupération data via Uptime Kuma avec timeout
     const response = await fetch(kumaUrl, {
       next: { revalidate: 30 },
+      headers: { "User-Agent": "eolivarez-portfolio-monitor" },
     });
 
-    if (!response.ok) throw new Error("Uptime Kuma est injoignable");
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => "Unknown error");
+      console.error(
+        `[Status API] Kuma unreachable (${response.status}): ${errorText}`,
+      );
+      throw new Error("Uptime Kuma est injoignable");
+    }
 
-    const data = await response.json();
-    const heartbeatList: Record<string, KumaHeartbeat[]> =
-      data.heartbeatList || {};
+    const data = (await response.json()) as UptimeKumaResponse;
+    const heartbeatList = data.heartbeatList || {};
 
     // Transformation en liste d'objets exploitables
     const services = Object.keys(heartbeatList).map((id) => {
       const history = heartbeatList[id] || [];
-      const lastCheck = history[history.length - 1] || { status: 0 };
+      const lastCheck =
+        history.length > 0 ? history[history.length - 1] : { status: 0 };
 
       return {
         name: ID_MAP[id] || `Service ${id}`,
@@ -57,7 +71,7 @@ export async function GET() {
       };
     });
 
-    // Envoi avec cache navigateur 30s
+    // Envoi avec cache navigateur et CDN (30s)
     return NextResponse.json(
       { services },
       {
@@ -67,7 +81,7 @@ export async function GET() {
       },
     );
   } catch (error) {
-    console.error("Status API Uptime Error:", error);
+    console.error("Critical Status API Error:", error);
     return NextResponse.json(
       { services: [], error: "Erreur lors de la récupération des statuts" },
       { status: 500 },

@@ -1,10 +1,15 @@
 import React from "react";
 import HeroClient from "@/components/home/HeroClient";
-import ExpertiseGrid from "@/components/home/ExpertiseGrid";
+import dynamic from "next/dynamic";
+import { Metadata } from "next";
 
-// Metadata gérées côté serveur
-export const metadata = {
-  title: "Emilien OLIVAREZ | Accueil",
+const ExpertiseGrid = dynamic(() => import("@/components/home/ExpertiseGrid"), {
+  loading: () => (
+    <div className="h-96 bg-zinc-900/50 animate-pulse rounded-2xl" />
+  ),
+});
+
+export const metadata: Metadata = {
   description:
     "Portfolio d'Emilien Olivarez, élève en Bac Pro CIEL passionné par le développement web et les systèmes embarqués.",
 };

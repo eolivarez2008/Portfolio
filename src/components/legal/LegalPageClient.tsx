@@ -16,7 +16,7 @@ export default function LegalPageClient() {
           Legal<span className="text-zinc-700">_</span>
         </h1>
         <p className="text-zinc-500 font-mono text-[10px] uppercase tracking-[0.3em]">
-          Dernière mise à jour : 27 Février 2026
+          Dernière mise à jour : 28 Février 2026
         </p>
       </motion.div>
 
@@ -153,9 +153,8 @@ export default function LegalPageClient() {
                   <p className="text-[11px] text-red-200/60 font-mono leading-tight italic">
                     Toute tentative d&apos;accès frauduleux, scan de
                     vulnérabilités ou attaque par déni de service (DDoS) est
-                    enregistrée par le monitoring interne (Portainer/Uptime
-                    Kuma). L&apos;éditeur se réserve le droit de bannir
-                    définitivement toute IP suspecte.
+                    strictement interdite. L&apos;éditeur se réserve le droit de
+                    bannir définitivement toute IP suspecte.
                   </p>
                 </div>
               </div>

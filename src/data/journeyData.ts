@@ -1,4 +1,3 @@
-// Types pour le parcours
 export interface JourneyItem {
   date: string;
   title: string;
@@ -9,7 +8,6 @@ export interface JourneyItem {
   skills?: string[];
 }
 
-// Types pour les archives
 export interface ArchiveFolder {
   category: string;
   items: {
@@ -18,7 +16,6 @@ export interface ArchiveFolder {
   }[];
 }
 
-// Données du parcours (Timeline)
 export const JOURNEY: JourneyItem[] = [
   {
     date: "OCTOBRE 2025",
@@ -71,10 +68,11 @@ export const JOURNEY: JourneyItem[] = [
     skills: ["Installation", "Chantier"],
   },
   {
-    date: "2023 — 2026",
+    date: "2026",
     title: "Bac Pro CIEL",
     location: "Lycée Louis de Cormontaigne, Metz",
-    description: "Cybersécurité, Informatique, Electronique et Réseaux.",
+    description:
+      "Successeur du Bac Pro SN (Systèmes Numériques), le Bac Pro CIEL est spécialisé en Cybersécurité, Informatique Electronique et Réseaux.",
     icon: "edu",
     type: "edu",
   },
@@ -82,13 +80,13 @@ export const JOURNEY: JourneyItem[] = [
     date: "2023",
     title: "Brevet des Collèges",
     location: "Collège Jean Rostand, Metz",
-    description: "Série Générale - Mention Très Bien.",
+    description:
+      "Diplôme National du Brevet (Série Générale). Validation du socle commun de compétences avec Mention Très Bien.",
     icon: "edu",
     type: "edu",
   },
 ];
 
-// Données des archives (Bulletins & Diplômes)
 export const ARCHIVES: ArchiveFolder[] = [
   {
     category: "Collège",
