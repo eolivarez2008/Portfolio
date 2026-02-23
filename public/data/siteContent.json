@@ -1,0 +1,50 @@
+{
+  "hero": {
+    "name": "Emilien",
+    "lastname": "OLIVAREZ",
+    "subtitle": "Élève en Bac Pro CIEL, je me forme au développement web et à la création de jeux vidéo en autodidacte."
+  },
+  "quotes": [
+    {
+      "text": "Le code est comme l'humour. Quand on doit l'expliquer, c'est qu'il est mauvais.",
+      "author": "Cory House",
+      "rotation": "-4deg"
+    },
+    {
+      "text": "La meilleure façon d'apprendre à programmer est de programmer.",
+      "author": "Nicholas Wirth",
+      "rotation": "4deg"
+    }
+  ],
+  "expertise": [
+    {
+      "title": "Web Dev",
+      "description": "Interfaces modernes avec Next.js, React et des animations fluides.",
+      "icon": "Code2"
+    },
+    {
+      "title": "Game Dev",
+      "description": "Conception d'expériences interactives sur Unity 6.",
+      "icon": "Gamepad2"
+    },
+    {
+      "title": "UI/UX Design",
+      "description": "Design minimaliste et efficace pour une expérience optimale.",
+      "icon": "Layers"
+    },
+    {
+      "title": "Systèmes CIEL",
+      "description": "Informatique réseaux et systèmes embarqués.",
+      "icon": "Cpu"
+    }
+  ],
+  "about": {
+    "bio": [
+      "Depuis que je suis petit, j'ai toujours été fasciné par la manière dont les choses fonctionnent. Ce qui était juste de la curiosité au début sur l'ordinateur de la maison est devenu une vraie passion. J'ai vite arrêté de juste \"utiliser\" les logiciels pour essayer de comprendre comment ils sont construits.",
+      "Aujourd'hui, à 17 ans, je fais avec ce que j'ai sous la main. Je code et je gère mon serveur sur le PC Windows de la région. Ça m'a appris un truc important : il n'a pas besoin d'une machine de guerre à 3000€ pour faire tourner des projets sérieux. C'est la débrouille et l'optimisation qui comptent le plus.",
+      "Mon quotidien, c'est de tester des trucs sur mon serveur Linux, de casser des configs et de les réparer. Je ne prétends pas tout savoir, je découvre encore plein de trucs chaque jour, mais c'est justement ça qui me plaît : apprendre par moi-même et voir mes services tourner en prod sur ma propre infra."
+    ],
+    "discipline": "Pratiquant de musculation depuis juin 2025. Plus qu'un loisir, une discipline quotidienne qui forge ma capacité à relever des défis, qu'ils soient physiques ou technologiques.",
+    "projects_description": "De l'expérimentation 3D avec WebGL au développement sur Unity. Chaque projet est une opportunité d'en apprendre toujours plus."
+  }
+}

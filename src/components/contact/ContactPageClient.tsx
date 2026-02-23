@@ -30,7 +30,6 @@ export default function ContactPageClient() {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const MAX_CHARS = 1000;
 
-  // gestion envoi formulaire + check captcha et tracking
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { JOURNEY, ARCHIVES, JourneyItem } from "@/data/journeyData";
 import { trackEvent } from "@/lib/analytics";
 import {
   GraduationCap,
@@ -18,6 +17,24 @@ import {
   FileText,
 } from "lucide-react";
 
+interface JourneyItem {
+  date: string;
+  title: string;
+  location: string;
+  description: string;
+  icon: string;
+  type: "work" | "edu";
+  skills: string[];
+}
+interface ArchiveDoc {
+  name: string;
+  file: string;
+}
+interface ArchiveFolder {
+  category: string;
+  items: ArchiveDoc[];
+}
+
 export default function JourneyPageClient() {
   const [filter, setFilter] = useState<"work" | "edu">("work");
   const [selectedDoc, setSelectedDoc] = useState<string | null>(null);
@@ -25,13 +42,23 @@ export default function JourneyPageClient() {
   const [localShowAll, setLocalShowAll] = useState<{ [key: number]: boolean }>(
     {},
   );
+  const [journey, setJourney] = useState<JourneyItem[]>([]);
+  const [archives, setArchives] = useState<ArchiveFolder[]>([]);
 
-  const filteredJourney = JOURNEY.filter((item) => item.type === filter);
+  useEffect(() => {
+    fetch("/api/admin/journey")
+      .then((r) => r.json())
+      .then((d) => {
+        setJourney(d.journey ?? []);
+        setArchives(d.archives ?? []);
+      })
+      .catch(console.error);
+  }, []);
 
-  // check si mobile pour ouvrir pdf direct en nouvel onglet
+  const filteredJourney = journey.filter((item) => item.type === filter);
+
   const handleOpenDoc = (file: string, name: string) => {
     trackEvent("archive-view", { doc_name: name });
-
     if (window.innerWidth < 768) {
       window.open(file, "_blank", "noopener,noreferrer");
     } else {
@@ -41,7 +68,6 @@ export default function JourneyPageClient() {
 
   return (
     <main className="min-h-screen pt-28 md:pt-40 px-4 md:px-6 max-w-6xl mx-auto pb-32 text-white selection:bg-white selection:text-black">
-      {/* Ajout titre narratif et intro perso */}
       <div className="mb-12 text-left md:text-center">
         <motion.h1
           initial={{ opacity: 0, x: -20 }}
@@ -50,7 +76,6 @@ export default function JourneyPageClient() {
         >
           Mon Parcours<span className="text-white/20">_</span>
         </motion.h1>
-
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -73,7 +98,8 @@ export default function JourneyPageClient() {
         </motion.div>
         <div className="h-[1px] w-12 bg-zinc-800 mx-0 md:mx-auto mt-8" />
       </div>
-      {/* Ajout switch toggle pour filtrer par type (taf ou ecole) */}
+
+      {/* Toggle work/edu */}
       <div className="flex justify-center mb-20">
         <div className="flex p-1.5 bg-zinc-900/80 border border-white/10 rounded-full w-full max-w-[320px] relative backdrop-blur-xl">
           {(["work", "edu"] as const).map((tab) => (
@@ -83,9 +109,7 @@ export default function JourneyPageClient() {
                 setFilter(tab);
                 trackEvent("journey-filter-change", { type: tab });
               }}
-              className={`relative flex-1 py-3 text-[10px] font-bold uppercase tracking-widest transition-all z-10 ${
-                filter === tab ? "text-black" : "text-zinc-400 hover:text-white"
-              }`}
+              className={`relative flex-1 py-3 text-[10px] font-bold uppercase tracking-widest transition-all z-10 ${filter === tab ? "text-black" : "text-zinc-400 hover:text-white"}`}
             >
               {filter === tab && (
                 <motion.div
@@ -98,12 +122,13 @@ export default function JourneyPageClient() {
           ))}
         </div>
       </div>
-      {/* Ajout timeline responsive avec anim framer motion */}
+
+      {/* Timeline */}
       <div className="relative mb-32 w-full">
         <div className="absolute left-[31px] md:left-1/2 top-0 bottom-0 w-[1px] bg-zinc-800 md:-translate-x-1/2" />
         <div className="space-y-10 md:space-y-0">
-          <AnimatePresence mode="wait">
-            {filteredJourney.map((item: JourneyItem, index: number) => (
+          <AnimatePresence>
+            {filteredJourney.map((item, index) => (
               <motion.div
                 key={`${filter}-${index}`}
                 initial={{ opacity: 0, y: 20 }}
@@ -120,7 +145,6 @@ export default function JourneyPageClient() {
                     )}
                   </div>
                 </div>
-
                 <div className="w-[calc(100%-4.5rem)] md:w-[42%] ml-16 md:ml-0 group">
                   <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-white/10 bg-zinc-900/40 backdrop-blur-md hover:border-white/20 transition-colors">
                     <div className="flex justify-between items-center mb-4 text-[9px] font-mono text-zinc-500 uppercase tracking-widest font-bold">
@@ -159,19 +183,18 @@ export default function JourneyPageClient() {
           </AnimatePresence>
         </div>
       </div>
-      {/* Ajout section archives et gestion docs pdf */}
+
+      {/* Archives */}
       <section className="pt-24 border-t border-zinc-900">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tighter uppercase italic flex items-center gap-4 mb-16">
           <FolderOpen size={28} /> Archives
         </h2>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {ARCHIVES.map((folder, i) => {
+          {archives.map((folder, i) => {
             const isExpanded = globalShowAll || localShowAll[i];
             const displayItems = isExpanded
               ? folder.items
               : folder.items.slice(0, 4);
-
             return (
               <div key={i} className="flex flex-col">
                 <h3 className="text-[10px] font-black text-zinc-600 mb-6 uppercase tracking-[0.2em] border-l-2 border-white pl-4">
@@ -210,7 +233,6 @@ export default function JourneyPageClient() {
                     ))}
                   </AnimatePresence>
                 </div>
-
                 {folder.items.length > 4 && (
                   <button
                     onClick={() => {
@@ -241,7 +263,6 @@ export default function JourneyPageClient() {
             );
           })}
         </div>
-
         <div className="hidden lg:flex justify-center mt-12">
           <button
             onClick={() => {
@@ -256,7 +277,8 @@ export default function JourneyPageClient() {
           </button>
         </div>
       </section>
-      {/* Ajout modal visionneuse avec iframe pour desktop */}
+
+      {/* Modal visionneuse PDF */}
       <AnimatePresence>
         {selectedDoc && (
           <motion.div

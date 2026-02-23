@@ -73,12 +73,12 @@ export async function POST(req: Request) {
       content: "@everyone Nouveau message de contact reçu !",
       embeds: [
         {
-          title: "🚀 Nouveau contact reçu",
+          title: "Nouveau formulaire de contact reçu",
           color: 0x2b2d31,
           fields: [
-            { name: "👤 Expéditeur", value: `\`${cleanName}\``, inline: true },
-            { name: "📧 Email", value: `\`${cleanEmail}\``, inline: true },
-            { name: "💬 Message", value: `\`\`\`text\n${safeMessage}\n\`\`\`` },
+            { name: "Expéditeur", value: `\`${cleanName}\``, inline: true },
+            { name: "Email", value: `\`${cleanEmail}\``, inline: true },
+            { name: "Message", value: `\`\`\`text\n${safeMessage}\n\`\`\`` },
           ],
           footer: { text: "EOLIVAREZ Infrastructure" },
           timestamp: new Date().toISOString(),
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
     };
 
     // 6. Envoi au Webhook avec Timeout
-    const discordRes = await fetch(process.env.DISCORD_WEBHOOK_URL!, {
+    const discordRes = await fetch(process.env.DISCORD_CONTACT_WEBHOOK_URL!, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(discordPayload),
