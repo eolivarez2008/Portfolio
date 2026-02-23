@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model SiteSection {
+  id        Int      @id @default(autoincrement())
+  section   String   @unique
+  content   String
+  updatedAt DateTime @updatedAt
+}
+
+model Upload {
+  id          Int      @id @default(autoincrement())
+  filename    String
+  displayName String
+  path        String   @unique
+  category    String
+  sizeBytes   Int
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  section   String
+  details   String
+  createdAt DateTime @default(now())
+}

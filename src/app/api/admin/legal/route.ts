@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSection, setSection } from "@/lib/sections";
 import { notifyAdminChange } from "@/lib/adminNotify";
-import type { AboutData } from "@/types";
+import type { LegalContent } from "@/types";
 
-const SECTION = "aboutData";
+const SECTION = "legalContent";
 
 export async function GET() {
-  const data = await getSection<AboutData>(SECTION);
+  const data = await getSection<LegalContent>(SECTION);
   if (!data)
     return NextResponse.json({ error: "Section introuvable" }, { status: 404 });
   return NextResponse.json(data);
@@ -16,9 +16,8 @@ export async function PUT(req: NextRequest) {
   if (req.headers.get("x-admin-secret") !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const body: AboutData = await req.json();
-  const details = `Tech stack: ${body.techStack?.length ?? 0} items, Roadmap: ${body.roadmapSteps?.length ?? 0} étapes`;
-  await setSection(SECTION, body, details);
-  await notifyAdminChange("About", details);
+  const body: LegalContent = await req.json();
+  await setSection(SECTION, body, "Contenu légal modifié");
+  await notifyAdminChange("Legal", "Mentions légales / RGPD modifiés");
   return NextResponse.json({ success: true });
 }

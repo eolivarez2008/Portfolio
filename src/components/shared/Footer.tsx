@@ -26,7 +26,7 @@ export function Footer() {
     <footer className="w-full bg-black/40 backdrop-blur-xl border-t border-zinc-800 pt-16 pb-12 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 text-center md:text-left">
-          {/* COLONNE GAUCHE : BRAND */}
+          {/* COLONNE GAUCHE */}
           <div className="md:col-span-5 flex flex-col items-center md:items-start space-y-6">
             <div className="space-y-4 flex flex-col items-center md:items-start">
               <div className="flex items-center gap-3">

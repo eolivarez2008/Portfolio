@@ -9,7 +9,7 @@ export async function notifyAdminChange(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      content: "@everyone",
+      content: "<@&1483836726429356123>",
       embeds: [
         {
           title: `🛠️ Modification Admin — ${section}`,

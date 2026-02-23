@@ -25,3 +25,12 @@ yarn-error.log*
 
 # Tests et types
 .typescript
+/src/generated/prisma
+
+# Prisma
+prisma/database.db
+prisma/*.db-journal
+prisma/prisma/
+
+# Uploads
+uploads/*

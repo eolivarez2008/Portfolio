@@ -16,36 +16,44 @@ interface SiteQuote {
   author: string;
   rotation: string;
 }
+interface SiteContent {
+  hero: SiteHero;
+  quotes: SiteQuote[];
+}
 
 export default function HeroClient() {
-  const [hero, setHero] = useState<SiteHero>({
-    name: "Emilien",
-    lastname: "OLIVAREZ",
-    subtitle:
-      "Élève en Bac Pro CIEL, je me forme au développement web et à la création de jeux vidéo en autodidacte.",
-  });
-  const [quotes, setQuotes] = useState<SiteQuote[]>([
-    {
-      text: "Le code est comme l'humour. Quand on doit l'expliquer, c'est qu'il est mauvais.",
-      author: "Cory House",
-      rotation: "-4deg",
-    },
-    {
-      text: "La meilleure façon d'apprendre à programmer est de programmer.",
-      author: "Nicholas Wirth",
-      rotation: "4deg",
-    },
-  ]);
+  const [content, setContent] = useState<SiteContent | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/site-content")
       .then((r) => r.json())
-      .then((d) => {
-        if (d.hero) setHero(d.hero);
-        if (d.quotes) setQuotes(d.quotes);
-      })
-      .catch(() => {});
+      .then((d) => setContent({ hero: d.hero, quotes: d.quotes ?? [] }))
+      .catch(() =>
+        setContent({
+          hero: { name: "", lastname: "", subtitle: "" },
+          quotes: [],
+        }),
+      );
   }, []);
+
+  if (content === null) {
+    return (
+      <section className="pt-28 md:pt-40 px-6 overflow-hidden">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <div className="h-24 md:h-36 w-3/4 bg-zinc-900/50 animate-pulse rounded-2xl" />
+            <div className="h-6 w-2/3 bg-zinc-900/50 animate-pulse rounded-xl" />
+            <div className="flex gap-3">
+              <div className="h-12 w-28 bg-zinc-900/50 animate-pulse rounded-2xl" />
+              <div className="h-12 w-28 bg-zinc-900/50 animate-pulse rounded-2xl" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const { hero, quotes } = content;
 
   return (
     <section className="pt-28 md:pt-40 px-6 overflow-hidden">
@@ -91,6 +99,7 @@ export default function HeroClient() {
             </Link>
           </div>
         </div>
+
         <div className="relative h-[250px] md:h-[320px] w-full hidden sm:block">
           {quotes[0] && (
             <QuoteCard

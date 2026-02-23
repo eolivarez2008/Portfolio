@@ -6,36 +6,52 @@ import { Code2, Dumbbell, Target, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { trackEvent } from "@/lib/analytics";
+import type { AboutData, SiteContent } from "@/types";
 
-// Types inline (aboutData.ts est maintenant vide, on type ici)
-interface TechItem {
-  name: string;
-  icon: string;
-}
-
-interface RoadmapStep {
-  title: string;
-  date: string;
-  active: boolean;
-  placeholder?: boolean;
+interface PageData {
+  about: AboutData;
+  site: SiteContent;
 }
 
 export default function AboutPageClient() {
-  // Chargement dynamique depuis le JSON admin (modifiable sans redéploiement)
-  const [techStack, setTechStack] = useState<TechItem[]>([]);
-  const [roadmapSteps, setRoadmapSteps] = useState<RoadmapStep[]>([]);
+  const [data, setData] = useState<PageData | null>(null);
 
   useEffect(() => {
-    fetch("/api/admin/about")
-      .then((r) => r.json())
-      .then((d) => {
-        setTechStack(d.techStack ?? []);
-        setRoadmapSteps(d.roadmapSteps ?? []);
-      })
-      .catch(() => {
-        // Silencieux : le composant reste vide si l'API échoue
-      });
+    Promise.all([
+      fetch("/api/admin/about").then((r) => r.json()),
+      fetch("/api/admin/site-content").then((r) => r.json()),
+    ])
+      .then(([about, site]) => setData({ about, site }))
+      .catch(() => setData(null));
   }, []);
+
+  if (data === null) {
+    return (
+      <main className="min-h-screen pt-28 md:pt-40 pb-20 text-white overflow-x-hidden">
+        <section className="px-6 max-w-5xl mx-auto mb-20 md:mb-32">
+          <div className="h-16 w-48 bg-zinc-900/50 animate-pulse rounded-2xl mb-16" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16">
+            <div className="lg:col-span-7 space-y-4">
+              {Array(3)
+                .fill(0)
+                .map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-6 bg-zinc-900/50 animate-pulse rounded-xl"
+                  />
+                ))}
+            </div>
+            <div className="lg:col-span-5">
+              <div className="h-48 bg-zinc-900/50 animate-pulse rounded-3xl" />
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  const { techStack, roadmapSteps } = data.about;
+  const { bio, discipline, projects_description } = data.site.about;
 
   return (
     <main className="min-h-screen pt-28 md:pt-40 pb-20 text-white selection:bg-white selection:text-black overflow-x-hidden">
@@ -46,37 +62,14 @@ export default function AboutPageClient() {
         </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16">
+          {/* Bio */}
           <div className="lg:col-span-7 space-y-6 md:space-y-8 text-zinc-400 text-base md:text-lg leading-relaxed">
-            <p>
-              Depuis que je suis petit, j&apos;ai toujours été fasciné par la
-              manière dont les choses fonctionnent. Ce qui était juste de la
-              curiosité au début sur l&apos;ordinateur de la maison est devenu
-              une vraie passion. J&apos;ai vite arrêté de juste
-              &ldquo;utiliser&rdquo; les logiciels pour essayer de comprendre
-              comment ils sont construits.
-            </p>
-
-            <p>
-              Aujourd&apos;hui, à 17 ans, je fais avec ce que j&apos;ai sous la
-              main. Je code et je gère mon serveur sur le
-              <span className="text-white font-medium italic border-b border-white/10 ml-1">
-                PC Windows de la région
-              </span>
-              . Ça m&apos;a appris un truc important : il n&apos;a pas besoin
-              d&apos;une machine de guerre à 3000€ pour faire tourner des
-              projets sérieux. C&apos;est la débrouille et l&apos;optimisation
-              qui comptent le plus.
-            </p>
-
-            <p>
-              Mon quotidien, c&apos;est de tester des trucs sur mon serveur
-              Linux, de casser des configs et de les réparer. Je ne prétends pas
-              tout savoir, je découvre encore plein de trucs chaque jour, mais
-              c&apos;est justement ça qui me plaît : apprendre par moi-même et
-              voir mes services tourner en prod sur ma propre infra.
-            </p>
+            {bio.map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
           </div>
 
+          {/* Roadmap */}
           <div className="lg:col-span-5">
             <div className="glass-card p-6 md:p-8 rounded-3xl border border-white/5 bg-zinc-900/20 shadow-2xl">
               <h3 className="flex items-center gap-3 text-zinc-500 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.3em] mb-8">
@@ -91,14 +84,22 @@ export default function AboutPageClient() {
                       !step.placeholder &&
                       trackEvent("roadmap-hover", { step: step.title })
                     }
-                    className={`relative flex gap-5 items-start ${!step.active && !step.placeholder ? "opacity-70" : ""} ${step.placeholder ? "opacity-40" : ""}`}
+                    className={`relative flex gap-5 items-start ${
+                      !step.active && !step.placeholder ? "opacity-70" : ""
+                    } ${step.placeholder ? "opacity-40" : ""}`}
                   >
                     <div
-                      className={`w-3.5 h-3.5 rounded-full border-4 border-black z-10 mt-1 ${step.active ? "bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]" : "bg-zinc-800"}`}
+                      className={`w-3.5 h-3.5 rounded-full border-4 border-black z-10 mt-1 ${
+                        step.active
+                          ? "bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+                          : "bg-zinc-800"
+                      }`}
                     />
                     <div>
                       <p
-                        className={`text-sm font-bold tracking-tight ${step.active ? "text-white" : "text-zinc-400"} ${step.placeholder ? "text-zinc-700 italic" : ""}`}
+                        className={`text-sm font-bold tracking-tight ${
+                          step.active ? "text-white" : "text-zinc-400"
+                        } ${step.placeholder ? "text-zinc-700 italic" : ""}`}
                       >
                         {step.title}
                       </p>
@@ -134,7 +135,6 @@ export default function AboutPageClient() {
               animate={{ x: ["0%", "-50%"] }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
             >
-              {/* Doublement du tableau pour le défilement infini */}
               {[...techStack, ...techStack].map((tech, i) => (
                 <div
                   key={i}
@@ -173,9 +173,7 @@ export default function AboutPageClient() {
                 Mes Réalisations
               </h3>
               <p className="text-zinc-500 text-sm md:text-base leading-relaxed max-w-md">
-                De l&apos;expérimentation 3D avec WebGL au développement sur
-                Unity. Chaque projet est une opportunité d&apos;en apprendre
-                toujours plus.
+                {projects_description}
               </p>
             </div>
             <Link
@@ -201,9 +199,7 @@ export default function AboutPageClient() {
             Discipline
           </h3>
           <p className="text-zinc-500 text-[12px] md:text-[13px] leading-relaxed italic">
-            &rdquo;Pratiquant de musculation depuis juin 2025. Plus qu&apos;un
-            loisir, une discipline quotidienne qui forge ma capacité à relever
-            des défis, qu&apos;ils soient physiques ou technologiques.&rdquo;
+            &rdquo;{discipline}&rdquo;
           </p>
         </div>
       </section>

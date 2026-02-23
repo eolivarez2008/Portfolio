@@ -65,7 +65,6 @@ export default function JourneyPageClient() {
       setSelectedDoc(file);
     }
   };
-
   return (
     <main className="min-h-screen pt-28 md:pt-40 px-4 md:px-6 max-w-6xl mx-auto pb-32 text-white selection:bg-white selection:text-black">
       <div className="mb-12 text-left md:text-center">

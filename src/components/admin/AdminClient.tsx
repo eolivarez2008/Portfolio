@@ -1,55 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useCallback } from "react";
-import { Save, RefreshCw, Plus, Trash2, Lock } from "lucide-react";
+import { Save, RefreshCw, Plus, Trash2, Lock, LogOut } from "lucide-react";
+import type {
+  AboutData,
+  StatusConfig,
+  JourneyData,
+  SiteContent,
+  LegalContent,
+} from "@/types";
 
-// --- Types ---
-interface TechItem {
-  name: string;
-  icon: string;
-}
-interface RoadmapStep {
-  title: string;
-  date: string;
-  active: boolean;
-  placeholder?: boolean;
-}
-interface AboutData {
-  techStack: TechItem[];
-  roadmapSteps: RoadmapStep[];
-}
-interface StatusConfig {
-  idMap: Record<string, string>;
-}
-interface JourneyItem {
-  date: string;
-  title: string;
-  location: string;
-  description: string;
-  type: "work" | "edu";
-  skills: string[];
-}
-interface ArchiveDoc {
-  name: string;
-  file: string;
-}
-interface ArchiveFolder {
-  category: string;
-  items: ArchiveDoc[];
-}
-interface JourneyData {
-  journey: JourneyItem[];
-  archives: ArchiveFolder[];
-}
-interface SiteContent {
-  hero: { name: string; lastname: string; subtitle: string };
-  quotes: { text: string; author: string; rotation: string }[];
-  expertise: { title: string; description: string; icon: string }[];
-  about: { bio: string[]; discipline: string; projects_description: string };
-}
+type Tab = "about" | "journey" | "site" | "legal" | "status" | "github";
 
-type Tab = "about" | "status" | "journey" | "site" | "github";
+// ─── Composant principal ──────────────────────────────────────────────────────
 
 export default function AdminClient() {
   const [secret, setSecret] = useState("");
@@ -63,19 +26,23 @@ export default function AdminClient() {
   const [statusConfig, setStatusConfig] = useState<StatusConfig | null>(null);
   const [journeyData, setJourneyData] = useState<JourneyData | null>(null);
   const [siteContent, setSiteContent] = useState<SiteContent | null>(null);
+  const [legalContent, setLegalContent] = useState<LegalContent | null>(null);
 
-  const loadData = useCallback(async (adminSecret: string) => {
-    sessionStorage.setItem("admin_secret", adminSecret);
-    const [aboutRes, statusRes, journeyRes, siteRes] = await Promise.all([
-      fetch("/api/admin/about"),
-      fetch("/api/admin/status-config"),
-      fetch("/api/admin/journey"),
-      fetch("/api/admin/site-content"),
-    ]);
+  // Charge toutes les données après authentification
+  const loadData = useCallback(async () => {
+    const [aboutRes, statusRes, journeyRes, siteRes, legalRes] =
+      await Promise.all([
+        fetch("/api/admin/about"),
+        fetch("/api/admin/status-config"),
+        fetch("/api/admin/journey"),
+        fetch("/api/admin/site-content"),
+        fetch("/api/admin/legal"),
+      ]);
     if (aboutRes.ok) setAboutData(await aboutRes.json());
     if (statusRes.ok) setStatusConfig(await statusRes.json());
     if (journeyRes.ok) setJourneyData(await journeyRes.json());
     if (siteRes.ok) setSiteContent(await siteRes.json());
+    if (legalRes.ok) setLegalContent(await legalRes.json());
   }, []);
 
   const handleAuth = async () => {
@@ -86,13 +53,26 @@ export default function AdminClient() {
     if (res.ok) {
       setAuthenticated(true);
       setAuthError("");
-      loadData(secret);
-    } else setAuthError("Secret incorrect ou serveur inaccessible");
+      loadData();
+    } else {
+      setAuthError("Secret incorrect");
+    }
   };
 
-  const getSecret = () =>
-    secret || sessionStorage.getItem("admin_secret") || "";
+  const handleLogout = () => {
+    setAuthenticated(false);
+    setSecret("");
+    setAboutData(null);
+    setStatusConfig(null);
+    setJourneyData(null);
+    setSiteContent(null);
+    setLegalContent(null);
+    setMessage("");
+  };
 
+  const getSecret = () => secret;
+
+  // Sauvegarde générique via PUT
   const save = async (endpoint: string, data: unknown) => {
     setSaving(true);
     setMessage("");
@@ -105,15 +85,16 @@ export default function AdminClient() {
         },
         body: JSON.stringify(data),
       });
-      if (res.ok) setMessage("✅ Sauvegardé avec succès");
-      else {
+      if (res.ok) {
+        setMessage("success:Sauvegardé avec succès");
+      } else {
         const err = await res
           .json()
           .catch(() => ({ error: "Erreur inconnue" }));
-        setMessage(`❌ Erreur : ${err.error ?? res.status}`);
+        setMessage(`error:Erreur : ${err.error ?? res.status}`);
       }
     } catch {
-      setMessage("❌ Erreur réseau");
+      setMessage("error:Erreur réseau");
     } finally {
       setSaving(false);
     }
@@ -127,13 +108,17 @@ export default function AdminClient() {
         method: "POST",
         headers: { "x-admin-secret": getSecret() },
       });
-      setMessage(res.ok ? "✅ Cache GitHub purgé" : "❌ Erreur de purge");
+      setMessage(
+        res.ok ? "success:Cache GitHub purgé" : "error:Erreur de purge",
+      );
     } catch {
-      setMessage("❌ Erreur réseau");
+      setMessage("error:Erreur réseau");
     } finally {
       setSaving(false);
     }
   };
+
+  // ─── Écran de connexion ────────────────────────────────────────────────────
 
   if (!authenticated) {
     return (
@@ -152,6 +137,7 @@ export default function AdminClient() {
             onChange={(e) => setSecret(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAuth()}
             className="w-full bg-zinc-800 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-white/30"
+            autoFocus
           />
           {authError && <p className="text-red-400 text-xs">{authError}</p>}
           <button
@@ -165,10 +151,13 @@ export default function AdminClient() {
     );
   }
 
+  // ─── Tableau de bord ──────────────────────────────────────────────────────
+
   const tabs: { id: Tab; label: string }[] = [
     { id: "about", label: "About" },
     { id: "journey", label: "Parcours" },
     { id: "site", label: "Site" },
+    { id: "legal", label: "Legal" },
     { id: "status", label: "Status" },
     { id: "github", label: "GitHub" },
   ];
@@ -180,30 +169,48 @@ export default function AdminClient() {
           Administration
         </h1>
 
-        <div className="flex flex-wrap gap-2 mb-8 border-b border-white/10 pb-4">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => {
-                setActiveTab(tab.id);
-                setMessage("");
-              }}
-              className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors ${activeTab === tab.id ? "bg-white text-black" : "text-zinc-400 hover:text-white"}`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        {/* Barre onglets + bouton déconnexion */}
+        <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4 gap-4">
+          <div className="flex flex-wrap gap-2">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setMessage("");
+                }}
+                className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors ${
+                  activeTab === tab.id
+                    ? "bg-white text-black"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-xs text-zinc-500 hover:text-white transition-colors shrink-0"
+          >
+            <LogOut size={14} /> Déconnexion
+          </button>
         </div>
 
+        {/* Feedback sauvegarde */}
         {message && (
           <div
-            className={`mb-6 px-4 py-3 rounded-xl text-sm border ${message.startsWith("✅") ? "bg-emerald-950/40 border-emerald-500/20 text-emerald-400" : "bg-red-950/40 border-red-500/20 text-red-400"}`}
+            className={`mb-6 px-4 py-3 rounded-xl text-sm border ${
+              message.startsWith("success:")
+                ? "bg-emerald-950/40 border-emerald-500/20 text-emerald-400"
+                : "bg-red-950/40 border-red-500/20 text-red-400"
+            }`}
           >
-            {message}
+            {message.replace(/^(success|error):/, "")}
           </div>
         )}
 
-        {/* ─── ONGLET ABOUT ─── */}
+        {/* ─── ONGLET ABOUT ─────────────────────────────────────────────── */}
         {activeTab === "about" &&
           (aboutData ? (
             <div className="space-y-8">
@@ -241,7 +248,7 @@ export default function AdminClient() {
                             ),
                           })
                         }
-                        className="p-2 text-zinc-500 hover:text-red-400"
+                        className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -258,11 +265,12 @@ export default function AdminClient() {
                       ],
                     })
                   }
-                  className="mt-3 flex items-center gap-2 text-xs text-zinc-400 hover:text-white"
+                  className="mt-3 flex items-center gap-2 text-xs text-zinc-400 hover:text-white transition-colors"
                 >
                   <Plus size={14} /> Ajouter une techno
                 </button>
               </section>
+
               <section>
                 <h2 className="text-lg font-bold uppercase mb-4">Roadmap</h2>
                 <div className="space-y-3">
@@ -297,7 +305,7 @@ export default function AdminClient() {
                             n[i] = { ...n[i], active: e.target.checked };
                             setAboutData({ ...aboutData, roadmapSteps: n });
                           }}
-                        />{" "}
+                        />
                         Actif
                       </label>
                       <button
@@ -309,7 +317,7 @@ export default function AdminClient() {
                             ),
                           })
                         }
-                        className="p-2 text-zinc-500 hover:text-red-400"
+                        className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -317,6 +325,7 @@ export default function AdminClient() {
                   ))}
                 </div>
               </section>
+
               <button
                 onClick={() => save("/api/admin/about", aboutData)}
                 disabled={saving}
@@ -330,11 +339,10 @@ export default function AdminClient() {
             <p className="text-zinc-500 text-sm">Chargement...</p>
           ))}
 
-        {/* ─── ONGLET PARCOURS ─── */}
+        {/* ─── ONGLET PARCOURS ──────────────────────────────────────────── */}
         {activeTab === "journey" &&
           (journeyData ? (
             <div className="space-y-10">
-              {/* Entrées timeline */}
               <section>
                 <h2 className="text-lg font-bold uppercase mb-4">
                   Entrées Timeline
@@ -380,7 +388,7 @@ export default function AdminClient() {
                               ),
                             })
                           }
-                          className="p-2 text-zinc-500 hover:text-red-400"
+                          className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -454,13 +462,12 @@ export default function AdminClient() {
                       ],
                     })
                   }
-                  className="mt-3 flex items-center gap-2 text-xs text-zinc-400 hover:text-white"
+                  className="mt-3 flex items-center gap-2 text-xs text-zinc-400 hover:text-white transition-colors"
                 >
                   <Plus size={14} /> Ajouter une entrée
                 </button>
               </section>
 
-              {/* Archives / Bulletins */}
               <section>
                 <h2 className="text-lg font-bold uppercase mb-4">
                   Archives & Bulletins
@@ -490,11 +497,12 @@ export default function AdminClient() {
                             ),
                           })
                         }
-                        className="p-2 text-zinc-500 hover:text-red-400"
+                        className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
                       >
                         <Trash2 size={16} />
                       </button>
                     </div>
+
                     <div className="space-y-2 ml-4">
                       {folder.items.map((doc, di) => (
                         <div key={di} className="flex gap-3 items-center">
@@ -522,7 +530,7 @@ export default function AdminClient() {
                               setJourneyData({ ...journeyData, archives: n });
                             }}
                             className="flex-[2] bg-zinc-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white font-mono"
-                            placeholder="/chemin/fichier.pdf"
+                            placeholder="/Bulletins/fichier.pdf"
                           />
                           <button
                             onClick={() => {
@@ -532,12 +540,14 @@ export default function AdminClient() {
                               );
                               setJourneyData({ ...journeyData, archives: n });
                             }}
-                            className="p-2 text-zinc-500 hover:text-red-400"
+                            className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
                           >
                             <Trash2 size={16} />
                           </button>
                         </div>
                       ))}
+
+                      {/* Ajout manuel d'un doc */}
                       <button
                         onClick={() => {
                           const n = [...journeyData.archives];
@@ -547,13 +557,27 @@ export default function AdminClient() {
                           ];
                           setJourneyData({ ...journeyData, archives: n });
                         }}
-                        className="mt-2 flex items-center gap-2 text-xs text-zinc-500 hover:text-white"
+                        className="mt-2 flex items-center gap-2 text-xs text-zinc-500 hover:text-white transition-colors"
                       >
-                        <Plus size={12} /> Ajouter un document
+                        <Plus size={12} /> Ajouter un document manuellement
                       </button>
+
+                      {/* Upload PDF direct */}
+                      <BulletinUploader
+                        adminSecret={getSecret()}
+                        onUploaded={(filePath, displayName) => {
+                          const n = [...journeyData.archives];
+                          n[fi].items = [
+                            ...n[fi].items,
+                            { name: displayName, file: filePath },
+                          ];
+                          setJourneyData({ ...journeyData, archives: n });
+                        }}
+                      />
                     </div>
                   </div>
                 ))}
+
                 <button
                   onClick={() =>
                     setJourneyData({
@@ -564,7 +588,7 @@ export default function AdminClient() {
                       ],
                     })
                   }
-                  className="flex items-center gap-2 text-xs text-zinc-400 hover:text-white"
+                  className="flex items-center gap-2 text-xs text-zinc-400 hover:text-white transition-colors"
                 >
                   <Plus size={14} /> Ajouter une catégorie
                 </button>
@@ -583,11 +607,10 @@ export default function AdminClient() {
             <p className="text-zinc-500 text-sm">Chargement...</p>
           ))}
 
-        {/* ─── ONGLET SITE CONTENT ─── */}
+        {/* ─── ONGLET SITE ──────────────────────────────────────────────── */}
         {activeTab === "site" &&
           (siteContent ? (
             <div className="space-y-8">
-              {/* Hero */}
               <section>
                 <h2 className="text-lg font-bold uppercase mb-4">Hero</h2>
                 <div className="space-y-3">
@@ -633,7 +656,6 @@ export default function AdminClient() {
                 </div>
               </section>
 
-              {/* Citations */}
               <section>
                 <h2 className="text-lg font-bold uppercase mb-4">
                   Citations (Hero)
@@ -664,7 +686,7 @@ export default function AdminClient() {
                             ),
                           })
                         }
-                        className="p-2 text-zinc-500 hover:text-red-400 self-start"
+                        className="p-2 text-zinc-500 hover:text-red-400 self-start transition-colors"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -703,13 +725,12 @@ export default function AdminClient() {
                       ],
                     })
                   }
-                  className="flex items-center gap-2 text-xs text-zinc-400 hover:text-white"
+                  className="flex items-center gap-2 text-xs text-zinc-400 hover:text-white transition-colors"
                 >
                   <Plus size={14} /> Ajouter une citation
                 </button>
               </section>
 
-              {/* Expertise */}
               <section>
                 <h2 className="text-lg font-bold uppercase mb-4">
                   Expertise Grid
@@ -760,7 +781,7 @@ export default function AdminClient() {
                           ),
                         })
                       }
-                      className="p-2 text-zinc-500 hover:text-red-400"
+                      className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -768,7 +789,6 @@ export default function AdminClient() {
                 ))}
               </section>
 
-              {/* Bio About */}
               <section>
                 <h2 className="text-lg font-bold uppercase mb-4">
                   Bio (page About)
@@ -801,7 +821,7 @@ export default function AdminClient() {
                           },
                         })
                       }
-                      className="p-2 text-zinc-500 hover:text-red-400 self-start"
+                      className="p-2 text-zinc-500 hover:text-red-400 self-start transition-colors"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -817,10 +837,13 @@ export default function AdminClient() {
                       },
                     })
                   }
-                  className="mb-4 flex items-center gap-2 text-xs text-zinc-400 hover:text-white"
+                  className="mb-4 flex items-center gap-2 text-xs text-zinc-400 hover:text-white transition-colors"
                 >
                   <Plus size={14} /> Ajouter un paragraphe
                 </button>
+                <label className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 block">
+                  Discipline
+                </label>
                 <textarea
                   value={siteContent.about.discipline}
                   onChange={(e) =>
@@ -836,6 +859,9 @@ export default function AdminClient() {
                   rows={2}
                   placeholder="Texte Discipline"
                 />
+                <label className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 block">
+                  Description projets
+                </label>
                 <textarea
                   value={siteContent.about.projects_description}
                   onChange={(e) =>
@@ -866,7 +892,224 @@ export default function AdminClient() {
             <p className="text-zinc-500 text-sm">Chargement...</p>
           ))}
 
-        {/* ─── ONGLET STATUS ─── */}
+        {/* ─── ONGLET LEGAL ─────────────────────────────────────────────── */}
+        {activeTab === "legal" &&
+          (legalContent ? (
+            <div className="space-y-6">
+              <section>
+                <h2 className="text-lg font-bold uppercase mb-4">
+                  Informations générales
+                </h2>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 block">
+                      Dernière mise à jour
+                    </label>
+                    <input
+                      value={legalContent.lastUpdate}
+                      onChange={(e) =>
+                        setLegalContent({
+                          ...legalContent,
+                          lastUpdate: e.target.value,
+                        })
+                      }
+                      className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
+                      placeholder="17 Mars 2026"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 block">
+                        Nom éditeur
+                      </label>
+                      <input
+                        value={legalContent.editor.name}
+                        onChange={(e) =>
+                          setLegalContent({
+                            ...legalContent,
+                            editor: {
+                              ...legalContent.editor,
+                              name: e.target.value,
+                            },
+                          })
+                        }
+                        className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
+                        placeholder="Emilien Olivarez"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 block">
+                        Email éditeur
+                      </label>
+                      <input
+                        value={legalContent.editor.email}
+                        onChange={(e) =>
+                          setLegalContent({
+                            ...legalContent,
+                            editor: {
+                              ...legalContent.editor,
+                              email: e.target.value,
+                            },
+                          })
+                        }
+                        className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
+                        placeholder="email@exemple.com"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 block">
+                      Type de projet
+                    </label>
+                    <input
+                      value={legalContent.editor.type}
+                      onChange={(e) =>
+                        setLegalContent({
+                          ...legalContent,
+                          editor: {
+                            ...legalContent.editor,
+                            type: e.target.value,
+                          },
+                        })
+                      }
+                      className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
+                      placeholder="Projet personnel de portfolio"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-lg font-bold uppercase mb-4">
+                  Hébergement
+                </h2>
+                <div className="space-y-3">
+                  {(["type", "details", "proxy", "location"] as const).map(
+                    (field) => (
+                      <div key={field}>
+                        <label className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 block">
+                          {field}
+                        </label>
+                        <input
+                          value={legalContent.hosting[field]}
+                          onChange={(e) =>
+                            setLegalContent({
+                              ...legalContent,
+                              hosting: {
+                                ...legalContent.hosting,
+                                [field]: e.target.value,
+                              },
+                            })
+                          }
+                          className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white"
+                        />
+                      </div>
+                    ),
+                  )}
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-lg font-bold uppercase mb-4">
+                  Confidentialité
+                </h2>
+                <div className="space-y-4">
+                  {(
+                    ["contact_form", "analytics", "logs", "rights"] as const
+                  ).map((field) => (
+                    <div key={field}>
+                      <label className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 block">
+                        {field.replace("_", " ")}
+                      </label>
+                      <textarea
+                        value={legalContent.privacy[field]}
+                        onChange={(e) =>
+                          setLegalContent({
+                            ...legalContent,
+                            privacy: {
+                              ...legalContent.privacy,
+                              [field]: e.target.value,
+                            },
+                          })
+                        }
+                        className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white resize-none"
+                        rows={3}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-lg font-bold uppercase mb-4">
+                  Propriété & Sécurité
+                </h2>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 block">
+                      Propriété intellectuelle
+                    </label>
+                    <textarea
+                      value={legalContent.intellectual_property}
+                      onChange={(e) =>
+                        setLegalContent({
+                          ...legalContent,
+                          intellectual_property: e.target.value,
+                        })
+                      }
+                      className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white resize-none"
+                      rows={2}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 block">
+                      Avertissement sécurité
+                    </label>
+                    <textarea
+                      value={legalContent.security_warning}
+                      onChange={(e) =>
+                        setLegalContent({
+                          ...legalContent,
+                          security_warning: e.target.value,
+                        })
+                      }
+                      className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white resize-none"
+                      rows={2}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 block">
+                      Politique cookies
+                    </label>
+                    <textarea
+                      value={legalContent.cookies}
+                      onChange={(e) =>
+                        setLegalContent({
+                          ...legalContent,
+                          cookies: e.target.value,
+                        })
+                      }
+                      className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-2 text-sm text-white resize-none"
+                      rows={2}
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <button
+                onClick={() => save("/api/admin/legal", legalContent)}
+                disabled={saving}
+                className="flex items-center gap-2 bg-white text-black font-bold text-sm uppercase px-6 py-3 rounded-xl hover:bg-zinc-200 transition-colors disabled:opacity-50"
+              >
+                <Save size={16} />{" "}
+                {saving ? "Sauvegarde..." : "Sauvegarder Legal"}
+              </button>
+            </div>
+          ) : (
+            <p className="text-zinc-500 text-sm">Chargement...</p>
+          ))}
+
+        {/* ─── ONGLET STATUS ────────────────────────────────────────────── */}
         {activeTab === "status" &&
           (statusConfig ? (
             <div className="space-y-6">
@@ -896,11 +1139,14 @@ export default function AdminClient() {
                     />
                     <button
                       onClick={() => {
-                        const { [id]: _removed, ...rest } = statusConfig.idMap;
-                        setStatusConfig({ idMap: rest });
-                        setStatusConfig({ idMap: rest });
+                        const next = Object.fromEntries(
+                          Object.entries(statusConfig.idMap).filter(
+                            ([k]) => k !== id,
+                          ),
+                        );
+                        setStatusConfig({ idMap: next });
                       }}
-                      className="p-2 text-zinc-500 hover:text-red-400"
+                      className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -927,7 +1173,7 @@ export default function AdminClient() {
             <p className="text-zinc-500 text-sm">Chargement...</p>
           ))}
 
-        {/* ─── ONGLET GITHUB ─── */}
+        {/* ─── ONGLET GITHUB ────────────────────────────────────────────── */}
         {activeTab === "github" && (
           <div className="space-y-6">
             <h2 className="text-lg font-bold uppercase mb-2">
@@ -952,9 +1198,13 @@ export default function AdminClient() {
   );
 }
 
+// ─── Sous-composants ──────────────────────────────────────────────────────────
+
+// Ajout d'un nouvel ID Uptime Kuma
 function AddIdRow({ onAdd }: { onAdd: (id: string, name: string) => void }) {
   const [newId, setNewId] = useState("");
   const [newName, setNewName] = useState("");
+
   return (
     <div className="flex gap-3 items-center pt-2 border-t border-white/10">
       <input
@@ -977,10 +1227,86 @@ function AddIdRow({ onAdd }: { onAdd: (id: string, name: string) => void }) {
             setNewName("");
           }
         }}
-        className="flex items-center gap-1 text-xs text-zinc-400 hover:text-white px-3 py-2"
+        className="flex items-center gap-1 text-xs text-zinc-400 hover:text-white transition-colors px-3 py-2"
       >
         <Plus size={14} /> Ajouter
       </button>
+    </div>
+  );
+}
+
+// Upload PDF bulletin
+function BulletinUploader({
+  adminSecret,
+  onUploaded,
+}: {
+  adminSecret: string;
+  onUploaded: (filePath: string, displayName: string) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.endsWith(".pdf")) {
+      setError("Seuls les fichiers PDF sont acceptés");
+      return;
+    }
+
+    setUploading(true);
+    setError("");
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", "Bulletins");
+
+    try {
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        headers: { "x-admin-secret": adminSecret },
+        body: formData,
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const displayName = file.name
+          .replace(/\.pdf$/i, "")
+          .replace(/-/g, " ")
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+        onUploaded(data.path, displayName);
+      } else {
+        setError("Erreur lors de l'upload");
+      }
+    } catch {
+      setError("Erreur réseau");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
+
+  return (
+    <div className="mt-3 p-3 border border-dashed border-white/15 rounded-xl">
+      <label className="flex items-center gap-3 cursor-pointer group">
+        <span className="text-xs text-zinc-500 uppercase tracking-widest group-hover:text-zinc-300 transition-colors">
+          {uploading ? "⏳ Upload en cours..." : "📄 Uploader un PDF"}
+        </span>
+        <input
+          type="file"
+          accept=".pdf"
+          onChange={handleUpload}
+          disabled={uploading}
+          className="hidden"
+        />
+        {!uploading && (
+          <span className="px-3 py-1.5 bg-zinc-800 border border-white/10 rounded-lg text-xs text-white hover:bg-zinc-700 transition-colors">
+            Choisir
+          </span>
+        )}
+      </label>
+      {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
     </div>
   );
 }

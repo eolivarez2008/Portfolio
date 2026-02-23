@@ -1,32 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFile, writeFile } from "fs/promises";
-import path from "path";
+import { getSection, setSection } from "@/lib/sections";
 import { notifyAdminChange } from "@/lib/adminNotify";
+import type { JourneyData } from "@/types";
 
-const DATA_PATH = path.join(process.cwd(), "public/data/journeyData.json");
+const SECTION = "journeyData";
 
 export async function GET() {
-  try {
-    const raw = await readFile(DATA_PATH, "utf-8");
-    return NextResponse.json(JSON.parse(raw));
-  } catch {
-    return NextResponse.json({ error: "Fichier introuvable" }, { status: 404 });
-  }
+  const data = await getSection<JourneyData>(SECTION);
+  if (!data)
+    return NextResponse.json({ error: "Section introuvable" }, { status: 404 });
+  return NextResponse.json(data);
 }
 
 export async function PUT(req: NextRequest) {
   if (req.headers.get("x-admin-secret") !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  try {
-    const body = await req.json();
-    await writeFile(DATA_PATH, JSON.stringify(body, null, 2), "utf-8");
-    await notifyAdminChange(
-      "Journey / Archives",
-      `${body.journey?.length ?? 0} entrées parcours, ${body.archives?.reduce((acc: number, f: { items: unknown[] }) => acc + f.items.length, 0)} documents`,
-    );
-    return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json({ error: "Erreur écriture" }, { status: 500 });
-  }
+  const body: JourneyData = await req.json();
+  const details = `${body.journey?.length ?? 0} entrées, ${body.archives?.reduce((a, f) => a + f.items.length, 0)} documents`;
+  await setSection(SECTION, body, details);
+  await notifyAdminChange("Journey", details);
+  return NextResponse.json({ success: true });
 }
