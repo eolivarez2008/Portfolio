@@ -4,30 +4,41 @@ import path from "path";
 
 export const dynamic = "force-dynamic";
 
+const ALLOWED_ROOTS = [
+  path.join(process.cwd(), "uploads"),
+  path.join(process.cwd(), "public"),
+];
+
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
 ) {
   try {
-    const { path: filePath } = await params;
-    const normalized = filePath.join("/").replace(/\.\./g, "");
+    const { path: pathSegments } = await params;
 
-    const searchRoots = [
-      path.join(process.cwd()),
-      path.join(process.cwd(), "public"),
-    ];
+    const joined = pathSegments.join("/");
+    const decoded = decodeURIComponent(joined);
+    const safePath = decoded
+      .split("/")
+      .filter((seg) => seg !== ".." && seg !== "." && seg !== "")
+      .join("/");
 
     let buffer: Buffer | null = null;
     let resolvedPath = "";
 
-    for (const root of searchRoots) {
-      const candidate = path.join(root, normalized);
-      if (!candidate.startsWith(root)) continue;
+    for (const root of ALLOWED_ROOTS) {
+      const candidate = path.resolve(root, safePath);
+
+      if (!candidate.startsWith(root + path.sep) && candidate !== root)
+        continue;
+
       try {
         buffer = await readFile(candidate);
         resolvedPath = candidate;
         break;
-      } catch {}
+      } catch {
+        continue;
+      }
     }
 
     if (!buffer) {
@@ -41,6 +52,7 @@ export async function GET(
       ".jpg": "image/jpeg",
       ".jpeg": "image/jpeg",
       ".webp": "image/webp",
+      ".svg": "image/svg+xml",
     };
 
     return new NextResponse(new Uint8Array(buffer), {
@@ -50,9 +62,10 @@ export async function GET(
         "Content-Disposition": "inline",
         "Cache-Control": "public, max-age=3600",
         "X-Frame-Options": "SAMEORIGIN",
+        "Content-Security-Policy": "default-src 'self'",
       },
     });
   } catch {
-    return new NextResponse("Not Found", { status: 404 });
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
