@@ -41,7 +41,7 @@ export function Navbar() {
           {/* HEADER MOBILE */}
           <div className="flex items-center justify-between w-full lg:hidden h-10 px-4">
             <span className="text-white font-bold tracking-tighter text-[10px] uppercase opacity-80">
-              BAC PRO CIEL
+              Emilien OLIVAREZ
             </span>
             <button
               onClick={() => {
