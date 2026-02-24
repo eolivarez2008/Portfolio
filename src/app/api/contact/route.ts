@@ -63,8 +63,7 @@ export async function POST(req: Request) {
     const safeMessage = cleanMessage.replace(/`/g, "'");
 
     const discordPayload = {
-      username: "Portfolio Sentinel",
-      avatar_url: "https://eolivarez.site/favicon.ico",
+      username: "Portfolio Contact",
       content: "<@&1483836726429356123> Nouveau message de contact reçu !",
       embeds: [
         {

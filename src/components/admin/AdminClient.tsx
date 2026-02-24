@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Save, RefreshCw, Plus, Trash2, Lock, LogOut } from "lucide-react";
 import type {
   AboutData,
@@ -533,7 +533,20 @@ export default function AdminClient() {
                             placeholder="/Bulletins/fichier.pdf"
                           />
                           <button
-                            onClick={() => {
+                            onClick={async () => {
+                              const filePath = folder.items[di].file;
+
+                              if (filePath) {
+                                await fetch("/api/admin/upload", {
+                                  method: "DELETE",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                    "x-admin-secret": getSecret(),
+                                  },
+                                  body: JSON.stringify({ path: filePath }),
+                                });
+                              }
+
                               const n = [...journeyData.archives];
                               n[fi].items = n[fi].items.filter(
                                 (_, j) => j !== di,
@@ -1243,11 +1256,12 @@ function BulletinUploader({
   adminSecret: string;
   onUploaded: (filePath: string, displayName: string) => void;
 }) {
+  const [folder, setFolder] = useState<"root" | "Bulletins">("root");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleUpload = async (file: File | null) => {
     if (!file) return;
 
     if (!file.name.endsWith(".pdf")) {
@@ -1260,7 +1274,7 @@ function BulletinUploader({
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("folder", "Bulletins");
+    formData.append("folder", folder);
 
     try {
       const res = await fetch("/api/admin/upload", {
@@ -1275,6 +1289,7 @@ function BulletinUploader({
           .replace(/\.pdf$/i, "")
           .replace(/-/g, " ")
           .replace(/\b\w/g, (c) => c.toUpperCase());
+
         onUploaded(data.path, displayName);
       } else {
         setError("Erreur lors de l'upload");
@@ -1283,30 +1298,75 @@ function BulletinUploader({
       setError("Erreur réseau");
     } finally {
       setUploading(false);
-      e.target.value = "";
+      if (inputRef.current) inputRef.current.value = "";
     }
   };
 
   return (
-    <div className="mt-3 p-3 border border-dashed border-white/15 rounded-xl">
-      <label className="flex items-center gap-3 cursor-pointer group">
-        <span className="text-xs text-zinc-500 uppercase tracking-widest group-hover:text-zinc-300 transition-colors">
-          {uploading ? "⏳ Upload en cours..." : "📄 Uploader un PDF"}
-        </span>
-        <input
-          type="file"
-          accept=".pdf"
-          onChange={handleUpload}
-          disabled={uploading}
-          className="hidden"
-        />
-        {!uploading && (
-          <span className="px-3 py-1.5 bg-zinc-800 border border-white/10 rounded-lg text-xs text-white hover:bg-zinc-700 transition-colors">
-            Choisir
+    <div className="mt-3 h-10 flex items-center gap-2 px-2 bg-zinc-900 border border-white/10 rounded-lg shadow-inner">
+      {/* SECTION 1 : Sélecteur de dossier */}
+      <div className="flex items-center gap-0.5 p-0.5 bg-black/20 rounded-lg border border-white/5">
+        <button
+          type="button"
+          onClick={() => setFolder("root")}
+          className={`px-3 py-1 text-[11px] font-medium rounded-lg transition-colors ${
+            folder === "root"
+              ? "bg-zinc-700 text-white"
+              : "text-zinc-500 hover:text-zinc-300"
+          }`}
+        >
+          Racine
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setFolder("Bulletins")}
+          className={`px-3 py-1 text-[11px] font-medium rounded-lg transition-colors ${
+            folder === "Bulletins"
+              ? "bg-zinc-700 text-white"
+              : "text-zinc-500 hover:text-zinc-300"
+          }`}
+        >
+          Bulletins
+        </button>
+      </div>
+
+      {/* SECTION 2 : Zone centrale dynamique (Texte / Erreur) */}
+      <div className="flex-1 flex items-center justify-center px-2 min-w-0">
+        {error ? (
+          <span className="text-red-400 text-[11px] truncate flex items-center gap-1">
+            <span className="shrink-0">⚠️</span> {error}
+          </span>
+        ) : uploading ? (
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 border-2 border-zinc-500 border-t-white rounded-lg animate-spin" />
+            <span className="text-zinc-400 text-[11px]">Envoi...</span>
+          </div>
+        ) : (
+          <span className="text-zinc-600 text-[11px] uppercase tracking-wider font-medium truncate">
+            PDF
           </span>
         )}
-      </label>
-      {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+      </div>
+
+      {/* SECTION 3 : Bouton d'action */}
+      <button
+        type="button"
+        disabled={uploading}
+        onClick={() => inputRef.current?.click()}
+        className="h-7 px-4 bg-white text-black rounded-lg text-xs font-bold hover:bg-zinc-200 transition-all flex items-center justify-center shrink-0 disabled:opacity-50 disabled:pointer-events-none active:scale-95"
+      >
+        {uploading ? "..." : "Uploader"}
+      </button>
+
+      {/* INPUT FILE CACHÉ */}
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".pdf"
+        onChange={(e) => handleUpload(e.target.files?.[0] || null)}
+        className="hidden"
+      />
     </div>
   );
 }

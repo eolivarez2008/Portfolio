@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir, chmod } from "fs/promises";
+import { writeFile, mkdir, chmod, unlink } from "fs/promises";
 import path from "path";
 import { prisma } from "@/lib/db";
 import { notifyAdminChange } from "@/lib/adminNotify";
@@ -10,9 +10,11 @@ export async function GET(req: NextRequest) {
   if (req.headers.get("x-admin-secret") !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
   const uploads = await prisma.upload.findMany({
     orderBy: { createdAt: "desc" },
   });
+
   return NextResponse.json(uploads);
 }
 
@@ -24,7 +26,10 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
-    const folder = (formData.get("folder") as string) || "Bulletins";
+    const folderRaw = formData.get("folder") as string | null;
+
+    const raw = folderRaw?.trim() || "root";
+    const folder = raw.toLowerCase() === "root" ? "root" : "Bulletins";
 
     if (!file) {
       return NextResponse.json(
@@ -47,15 +52,23 @@ export async function POST(req: NextRequest) {
       .replace(/-+/g, "-")
       .toLowerCase();
 
-    const uploadDir = path.join(process.cwd(), "uploads", folder);
+    const uploadDir =
+      folder === "root"
+        ? path.join(process.cwd(), "uploads")
+        : path.join(process.cwd(), "uploads", folder);
+
     await mkdir(uploadDir, { recursive: true });
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const filePath = path.join(uploadDir, safeName);
+
     await writeFile(filePath, buffer);
     await chmod(filePath, 0o644);
 
-    const publicPath = `/api/file/${folder}/${safeName}`;
+    const publicPath =
+      folder === "root"
+        ? `/api/file/${safeName}`
+        : `/api/file/${folder}/${safeName}`;
 
     const displayName = file.name
       .replace(/\.pdf$/i, "")
@@ -75,6 +88,7 @@ export async function POST(req: NextRequest) {
     });
 
     await notifyAdminChange("Upload", `Nouveau fichier : ${publicPath}`);
+
     return NextResponse.json({ success: true, path: upload.path });
   } catch (err) {
     console.error("[Upload]", err);
@@ -86,7 +100,33 @@ export async function DELETE(req: NextRequest) {
   if (req.headers.get("x-admin-secret") !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const { path: filePath } = await req.json();
-  await prisma.upload.delete({ where: { path: filePath } });
-  return NextResponse.json({ success: true });
+
+  try {
+    const { path: publicPath } = await req.json();
+
+    if (!publicPath) {
+      return NextResponse.json({ error: "Path manquant" }, { status: 400 });
+    }
+
+    const parts = publicPath.replace("/api/file/", "").split("/");
+
+    let fileSystemPath;
+
+    if (parts.length === 1) {
+      fileSystemPath = path.join(process.cwd(), "uploads", parts[0]);
+    } else {
+      fileSystemPath = path.join(process.cwd(), "uploads", parts[0], parts[1]);
+    }
+
+    await unlink(fileSystemPath).catch(() => {});
+
+    await prisma.upload.delete({
+      where: { path: publicPath },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("[DELETE UPLOAD]", err);
+    return NextResponse.json({ error: "Erreur suppression" }, { status: 500 });
+  }
 }
