@@ -3,89 +3,30 @@
 @tailwind utilities;
 
 :root {
-  --background: #08090a; /* Un bleu-noir très profond */
-  --card: #0d0e10;
-  --border: rgba(255, 255, 255, 0.08);
-  --accent: #3b82f6;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
+  --background: #000000;
+  --foreground: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.12);
+  --card-hover-border: rgba(255, 255, 255, 0.25);
+  --muted: #888888;
 }
 
-body {
-  background-color: var(--background);
-  color: var(--text-primary);
-  overflow-x: hidden;
-}
-
-/* Le "Grain" qui donne de la texture */
-.grain-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  pointer-events: none;
-  opacity: 0.03;
-  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
-}
-
-/* Effet d'arrière-plan dynamique (nuages de couleur / liquide) */
-/* Un conteneur général pour les blobs */
-.gradient-background {
-  position: fixed;
-  inset: 0;
-  z-index: -10; /* Bien en dessous de tout */
-  overflow: hidden;
-  filter: blur(100px); /* Pour un effet diffus */
-  opacity: 0.3; /* Pour qu'ils ne soient pas trop dominants */
-}
-
-/* Chaque blob est une div avec un gradient et une animation */
-.gradient-blob {
-  position: absolute;
-  border-radius: 50%;
-  animation: moveBlob 20s infinite alternate; /* Mouvement lent */
-}
-
-.blob-1 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, #3b82f6 0%, transparent 70%); /* Bleu */
-  top: 10%;
-  left: 5%;
-  animation-delay: 0s;
-}
-
-.blob-2 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, #a855f7 0%, transparent 70%); /* Violet */
-  bottom: 20%;
-  right: 15%;
-  animation-delay: 5s;
-}
-
-.blob-3 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, #f43f5e 0%, transparent 70%); /* Rose */
-  top: 50%;
-  left: 40%;
-  animation-delay: 10s;
-}
-
-@keyframes moveBlob {
-  0% {
-    transform: translate(0, 0) scale(1);
+@layer base {
+  body {
+    @apply bg-black text-white antialiased;
+    background-color: var(--background);
   }
-  25% {
-    transform: translate(20px, -30px) scale(1.05);
-  }
-  50% {
-    transform: translate(-10px, 40px) scale(0.95);
-  }
-  75% {
-    transform: translate(30px, 10px) scale(1.1);
-  }
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
+}
+
+.glass-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+  transition: all 0.4s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--card-hover-border);
+  background-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-4px);
 }
