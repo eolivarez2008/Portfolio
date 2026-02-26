@@ -1,53 +1,82 @@
 "use client";
-import Link from "next/link";
-import { Github, Mail, Phone, ArrowUp, Globe, MessageSquare } from "lucide-react";
 
-const NAV_LINKS = [
-  { name: "Accueil", href: "/" },
-  { name: "Projets", href: "/projects" },
-  { name: "Parcours", href: "/journey" },
-  { name: "A propos de moi", href: "/about" },
-  { name: "Contact", href: "/contact" },
-];
+import Link from "next/link";
+import { Command, ArrowRight, Layout, Scale, Copyright } from "lucide-react";
+
+const FOOTER_LINKS = {
+  navigation: [
+    { name: "Accueil", href: "/" },
+    { name: "Projets", href: "/projects" },
+    { name: "Parcours", href: "/journey" },
+    { name: "À propos", href: "/about" },
+    { name: "Contact", href: "/contact" },
+  ],
+  legal: [
+    { name: "Mentions Légales", href: "/legal#mentions" },
+    { name: "Confidentialité", href: "/legal#privacy" },
+    { name: "CGU", href: "/legal#terms" },
+  ],
+};
 
 export function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-[#050505] border-t border-white/5 pt-10 pb-5 px-6 lg:px-24">
+    <footer className="w-full bg-black border-t border-zinc-900 pt-16 pb-12 px-6">
       <div className="max-w-6xl mx-auto">
-        
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-10">
-          
-          <div className="md:col-span-2 space-y-6">
-            <h2 className="text-2xl font-black italic tracking-tighter uppercase text-white">
-              Emilien <span className="text-blue-500">OLIVAREZ</span>
-            </h2>
-            <p className="text-zinc-500 text-sm max-w-sm leading-relaxed">
-              Étudiant en Bac Pro CIEL. 
-              Spécialisé dans la création d'interfaces interactives et la modélisation 3D.
-            </p>
-            <div className="flex gap-4">
-              <a href="https://github.com/eolivarez2008" target="_blank" className="p-3 bg-white/[0.03] border border-white/5 rounded-full hover:border-blue-500/50 hover:bg-blue-500/5 transition-all text-zinc-400 hover:text-white">
-                <Github size={20} />
-              </a>
-              <a href="https://discord.com/users/ems.lvrz" target="_blank" className="p-3 bg-white/[0.03] border border-white/5 rounded-full hover:border-blue-500/50 hover:bg-blue-500/5 transition-all text-zinc-400 hover:text-white">
-                <MessageSquare size={20} />
-              </a>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+          {/* COLONNE GAUCHE : BRAND & INFO */}
+          <div className="md:col-span-6 space-y-8">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                  <Command size={20} className="text-black" />
+                </div>
+                <span className="text-white font-black tracking-tighter text-xl uppercase italic">
+                  Emilien OLIVAREZ
+                </span>
+              </div>
+              <p className="text-zinc-500 text-[13px] leading-relaxed max-w-sm">
+                {
+                  "Développeur & Designer. Spécialisé dans la création d'interfaces minimalistes et la gestion d'infrastructures cloud."
+                }
+              </p>
+            </div>
+
+            {/* COPYRIGHT CARD AVEC ICONE LUCIDE */}
+            <div className="inline-flex items-center gap-4 p-4 rounded-2xl bg-zinc-950 border border-zinc-900 w-full sm:w-auto">
+              <div className="flex items-center gap-2">
+                <Copyright size={14} className="text-zinc-500" />
+                <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest font-bold">
+                  {currentYear} — eolivarez.site
+                </span>
+              </div>
+              <div className="h-4 w-[1px] bg-zinc-800" />
+              <span className="text-[9px] font-mono text-zinc-600 uppercase">
+                v1.2.4
+              </span>
             </div>
           </div>
 
-          <div className="space-y-6">
-            <h3 className="text-[10px] font-mono text-zinc-600 uppercase tracking-[0.3em]">Menu</h3>
+          {/* COLONNE EXPLORER */}
+          <div className="md:col-span-3 md:col-start-8 space-y-6">
+            <div className="flex items-center gap-2 border-l-2 border-white pl-3">
+              <Layout size={14} className="text-white" />
+              <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">
+                Explorer
+              </h4>
+            </div>
             <ul className="space-y-3">
-              {NAV_LINKS.map((link) => (
+              {FOOTER_LINKS.navigation.map((link) => (
                 <li key={link.name}>
-                  <Link 
+                  <Link
                     href={link.href}
-                    className="text-sm text-zinc-400 hover:text-blue-500 transition-colors"
+                    className="group flex items-center gap-2 text-[12px] text-zinc-500 hover:text-white transition-all"
                   >
+                    <ArrowRight
+                      size={10}
+                      className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-white"
+                    />
                     {link.name}
                   </Link>
                 </li>
@@ -55,42 +84,31 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="space-y-6">
-            <h3 className="text-[10px] font-mono text-zinc-600 uppercase tracking-[0.3em]">Coordonnées</h3>
+          {/* COLONNE LÉGAL */}
+          <div className="md:col-span-2 space-y-6">
+            <div className="flex items-center gap-2 border-l-2 border-white pl-3">
+              <Scale size={14} className="text-zinc-400" />
+              <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">
+                Légal
+              </h4>
+            </div>
             <ul className="space-y-3">
-              <li className="flex items-center gap-3 text-sm text-zinc-400">
-                <Phone size={14} className="text-blue-500" /> 06 50 45 45 32
-              </li>
-              <li className="flex items-center gap-3 text-sm text-zinc-400 italic">
-                <Mail size={14} className="text-blue-500" /> eolivarez2008@gmail.com
-              </li>
-              <li className="flex items-center gap-3 text-sm text-zinc-400 italic">
-                <Globe size={14} className="text-blue-500" /> Metz, France
-              </li>
+              {FOOTER_LINKS.legal.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="group flex items-center gap-2 text-[12px] text-zinc-500 hover:text-white transition-all"
+                  >
+                    <ArrowRight
+                      size={10}
+                      className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-white"
+                    />
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
-        </div>
-
-        <div className="pt-5 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-8">
-            <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
-              © 2026 — Emilien Olivarez
-            </p>
-            <div className="hidden md:flex items-center gap-2">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-[9px] font-mono text-zinc-700 uppercase">System Operational</span>
-            </div>
-          </div>
-
-          <button 
-            onClick={scrollToTop}
-            className="group flex items-center gap-3 text-[10px] font-mono text-zinc-400 uppercase tracking-widest hover:text-white transition-colors"
-          >
-            Back to top 
-            <div className="p-2 rounded-lg bg-white/[0.03] border border-white/5 group-hover:border-blue-500 transition-colors">
-              <ArrowUp size={14} />
-            </div>
-          </button>
         </div>
       </div>
     </footer>
