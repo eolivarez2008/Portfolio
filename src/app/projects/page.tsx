@@ -43,22 +43,22 @@ export default function ProjectsPage() {
   }, []);
 
   return (
-    <div className="bg-black text-white min-h-screen pt-40 pb-20 px-6 overflow-x-hidden">
+    <div className="bg-black text-white min-h-screen pt-28 md:pt-40 pb-20 px-6 overflow-x-hidden">
       <div className="max-w-6xl mx-auto">
         {/* --- HERO INFRA CARD --- */}
-        <section className="relative overflow-hidden glass-card rounded-[2.5rem] p-8 md:p-14 mb-24">
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
+        <section className="relative overflow-hidden glass-card rounded-[2.5rem] p-6 md:p-14 mb-16 md:mb-24 border border-white/5 bg-zinc-900/20 backdrop-blur-sm">
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-5 gap-10 md:gap-12 items-center">
             <div className="lg:col-span-3 space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-zinc-300 text-[10px] font-mono tracking-widest uppercase">
                 <Server size={12} /> System Administrator
               </div>
-              <h1 className="text-5xl md:text-7xl font-bold tracking-tighter leading-none">
+              <h1 className="text-4xl md:text-7xl font-bold tracking-tighter leading-tight md:leading-none">
                 Infrastructure <br />
                 <span className="text-zinc-400 italic font-light tracking-normal">
                   Self-Hosted.
                 </span>
               </h1>
-              <p className="text-zinc-300 text-lg leading-relaxed max-w-xl">
+              <p className="text-zinc-300 text-base md:text-lg leading-relaxed max-w-xl">
                 Gestion d&apos;un cloud privé sous Linux. De
                 l&apos;orchestration Docker aux tunnels Cloudflare, je déploie
                 mes propres services en environnement sécurisé.
@@ -83,7 +83,7 @@ export default function ProjectsPage() {
                   <Shield size={10} className="text-white" /> Active_Monitoring
                 </h3>
 
-                <div className="relative h-[200px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]">
+                <div className="relative h-[160px] md:h-[200px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]">
                   <div className="flex flex-col gap-2 animate-marquee-vertical">
                     {[...services, ...services].map((s, i) => (
                       <div
@@ -106,11 +106,11 @@ export default function ProjectsPage() {
         </section>
 
         {/* --- SECTION PROJETS --- */}
-        <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-4 mb-12">
+        <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-4 mb-10">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tighter italic uppercase text-white">
             Projets_
           </h2>
-          <span className="text-zinc-400 text-xs font-mono tracking-widest uppercase">
+          <span className="text-zinc-400 text-[10px] font-mono tracking-widest uppercase">
             {repos.length} Repositories sur GitHub
           </span>
         </div>
@@ -154,7 +154,7 @@ function ProjectCard({ repo }: { repo: GithubRepo }) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="group relative h-full flex flex-col glass-card rounded-[2rem] p-8"
+      className="group relative h-full flex flex-col glass-card rounded-[2.5rem] p-6 md:p-8 border border-white/5 bg-zinc-900/20"
     >
       <div className="flex justify-between items-start mb-8">
         <div className="p-3 bg-white/10 rounded-2xl group-hover:bg-white/20 transition-colors">
@@ -187,12 +187,12 @@ function ProjectCard({ repo }: { repo: GithubRepo }) {
       </h3>
 
       <p className="text-zinc-400 text-sm leading-relaxed mb-8 flex-grow group-hover:text-zinc-300 transition-colors">
-        {repo.description}
+        {repo.description || "Aucune description fournie."}
       </p>
 
       <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/10">
         <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest bg-white/5 px-2 py-1 rounded">
-          {repo.language}
+          {repo.language || "N/A"}
         </span>
         {repo.stargazers_count > 0 && (
           <div className="flex items-center gap-1 text-[10px] font-mono text-zinc-300">

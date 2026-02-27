@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -15,7 +15,17 @@ import {
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    setMounted(true);
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setIsOpen(false);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const navLinks = [
     { name: "ACCUEIL", href: "/", icon: <Home size={18} /> },
@@ -25,19 +35,20 @@ export function Navbar() {
     { name: "CONTACT", href: "/contact", icon: <MessagesSquare size={18} /> },
   ];
 
+  if (!mounted) return null;
+
   return (
     <nav className="fixed top-7 left-1/2 -translate-x-1/2 z-[1000] w-[90%] max-w-[1200px] pointer-events-none font-sans">
       <div className="flex flex-col items-center justify-center w-full">
-        {/* CONTAINER PRINCIPAL */}
-        <div className="relative w-full lg:w-auto bg-black/40 backdrop-blur-xl border border-white/10 pointer-events-auto rounded-[2rem] px-6 py-3 lg:px-8 lg:py-4">
+        <div className="relative w-full lg:w-auto bg-black/40 backdrop-blur-xl border border-white/10 pointer-events-auto rounded-[2rem] px-4 py-2 lg:px-2 lg:py-2">
           {/* HEADER MOBILE */}
-          <div className="flex items-center justify-between w-full lg:hidden">
+          <div className="flex items-center justify-between w-full lg:hidden h-10 px-4">
             <span className="text-white font-bold tracking-tighter text-xs uppercase opacity-80">
               BAC PRO CIEL
             </span>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-white p-2 hover:bg-white/5 rounded-full transition-colors"
+              className="text-white p-2 hover:bg-white/5 rounded-full transition-colors active:scale-95"
             >
               {isOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -47,12 +58,11 @@ export function Navbar() {
           <div
             className={`
               flex flex-col lg:flex-row items-center gap-1
-              overflow-hidden
-              transition-[max-height,opacity] duration-300 ease-in-out
+              overflow-hidden transition-all duration-500 ease-in-out
               ${
                 isOpen
-                  ? "max-h-[500px] mt-4 opacity-100"
-                  : "max-h-0 opacity-0 lg:max-h-none lg:opacity-100"
+                  ? "max-h-[500px] opacity-100 pt-2 pb-2"
+                  : "max-h-0 opacity-0 lg:max-h-none lg:opacity-100 invisible lg:visible"
               }
             `}
           >
@@ -66,11 +76,12 @@ export function Navbar() {
                   onClick={() => setIsOpen(false)}
                   className={`
                     flex items-center gap-3
-                    px-5 py-3 lg:px-6 lg:py-2.5
+                    px-5 py-2.5 lg:px-6 lg:py-3
                     rounded-full
                     text-[13px] font-bold tracking-tight
                     transition-all duration-300
                     w-full lg:w-auto
+                    whitespace-nowrap
                     ${
                       isActive
                         ? "bg-white text-black"
@@ -78,7 +89,7 @@ export function Navbar() {
                     }
                   `}
                 >
-                  {link.icon}
+                  <span className="shrink-0">{link.icon}</span>
                   <span>{link.name}</span>
                 </Link>
               );

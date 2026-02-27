@@ -1,253 +1,278 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Send,
-  CheckCircle2,
-  XCircle,
-  MessageSquare,
   Mail,
-  Github,
-  Linkedin,
-  Disc as Discord,
-  ArrowUpRight,
+  MapPin,
+  Loader2,
+  CheckCircle2,
+  MessageSquare,
   Clock,
+  XCircle,
+  User,
+  AtSign,
+  AlertCircle,
 } from "lucide-react";
+import { Turnstile, TurnstileInstance } from "@marsidev/react-turnstile";
 
 export default function ContactPage() {
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [token, setToken] = useState<string | null>(null);
+  const [charCount, setCharCount] = useState(0);
 
+  const formRef = useRef<HTMLFormElement>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
+
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
+  const MAX_CHARS = 1000;
+
+  // Logique d'envoi du formulaire
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!token) {
+      setErrorMsg("Vérification de sécurité requise.");
+      setStatus("error");
+      turnstileRef.current?.reset();
+      return;
+    }
+
     setStatus("loading");
-
     const formData = new FormData(e.currentTarget);
-    const name = formData.get("name");
-    const email = formData.get("email");
-    const message = formData.get("message");
-
-    // --- CONFIGURATION DISCORD ---
-    const DISCORD_WEBHOOK_URL =
-      "https://discordapp.com/api/webhooks/1476575489119359101/CZSmMVr9kse0ewf3lQQo-1SakIrUNZqpQEQI19krJfVwL1yJE0DcX36JkypDtHElfHrw";
-
-    const discordPayload = {
-      username: "Portfolio Bot",
-      avatar_url: "https://cdn-icons-png.flaticon.com/512/10061/10061835.png",
-      embeds: [
-        {
-          title: "📬 Nouveau message de contact",
-          color: 0xffffff,
-          fields: [
-            { name: "👤 Nom", value: name, inline: true },
-            { name: "📧 Email", value: email, inline: true },
-            { name: "💬 Message", value: message },
-          ],
-          footer: { text: "Envoyé depuis eolivarez.site" },
-          timestamp: new Date().toISOString(),
-        },
-      ],
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      message: formData.get("message"),
+      captchaToken: token,
     };
 
     try {
-      const response = await fetch(DISCORD_WEBHOOK_URL, {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(discordPayload),
+        body: JSON.stringify(data),
       });
 
       if (response.ok) {
         setStatus("success");
-        (e.target as HTMLFormElement).reset();
+        formRef.current?.reset();
+        setCharCount(0);
+        setToken(null);
+        turnstileRef.current?.reset();
+        setTimeout(() => setStatus("idle"), 6000);
       } else {
-        throw new Error("Discord API error");
+        const errData = await response.json();
+        throw new Error(errData.error || "Erreur de transmission");
       }
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      setErrorMsg(err.message || "Impossible de joindre le serveur.");
       setStatus("error");
-    } finally {
-      setTimeout(() => setStatus("idle"), 4000);
+      setToken(null);
+      turnstileRef.current?.reset();
     }
   };
 
   return (
-    <main className="min-h-screen pt-32 pb-32 px-6 max-w-5xl mx-auto text-white relative selection:bg-white selection:text-black">
-      {/* NOTIFICATION FLOTTANTE */}
-      <AnimatePresence>
-        {status !== "idle" && status !== "loading" && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, x: "-50%" }}
-            animate={{ opacity: 1, y: 0, x: "-50%" }}
-            exit={{ opacity: 0, scale: 0.95, x: "-50%" }}
-            className={`fixed bottom-10 left-1/2 z-[100] flex items-center gap-4 px-6 py-4 rounded-2xl border backdrop-blur-xl shadow-2xl min-w-[320px] ${
-              status === "success"
-                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                : "bg-red-500/10 border-red-500/20 text-red-400"
-            }`}
-          >
-            {status === "success" ? (
-              <CheckCircle2 size={22} />
-            ) : (
-              <XCircle size={22} />
-            )}
-            <div className="flex flex-col">
-              <span className="text-[10px] font-mono uppercase tracking-[0.2em] opacity-50">
-                System Status
-              </span>
-              <span className="font-bold text-sm tracking-tight uppercase italic">
-                {status === "success" ? "Message transmis" : "Échec de l'envoi"}
-              </span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <main className="min-h-screen pt-32 pb-32 px-6 max-w-4xl mx-auto text-white selection:bg-white selection:text-black">
+      {/* Header avec infos de contact */}
+      <section className="text-center mb-16 space-y-8">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-6xl md:text-8xl font-bold tracking-tighter uppercase italic"
+        >
+          Contact<span className="text-zinc-800">_</span>
+        </motion.h1>
 
-      {/* HEADER */}
-      <div className="mb-20">
-        <h1 className="text-6xl md:text-8xl font-bold tracking-tighter italic uppercase leading-none">
-          Contact<span className="text-zinc-700">_</span>
-        </h1>
-      </div>
+        <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex items-center gap-3 bg-zinc-900/50 border border-white/5 px-5 py-3 rounded-2xl">
+            <Mail size={16} className="text-zinc-500" />
+            <span className="text-xs font-medium italic text-zinc-300">
+              eolivarez2008@gmail.com
+            </span>
+          </div>
+          <div className="flex items-center gap-3 bg-zinc-900/50 border border-white/5 px-5 py-3 rounded-2xl">
+            <MapPin size={16} className="text-zinc-500" />
+            <span className="text-xs font-medium italic text-zinc-300">
+              Metz, France
+            </span>
+          </div>
+        </div>
+      </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* FORMULAIRE */}
-        <div className="lg:col-span-7">
-          <div className="glass-card p-8 md:p-12 rounded-[2.5rem] border border-white/5">
-            <h2 className="text-2xl font-bold italic uppercase mb-8 flex items-center gap-3 tracking-tighter">
-              <MessageSquare size={20} className="text-zinc-500" /> Envoyer un
-              message
-            </h2>
+      {/* Container principal du formulaire */}
+      <section className="relative">
+        {/* Overlays d'état (Succès / Erreur) */}
+        <AnimatePresence mode="wait">
+          {status === "success" && (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+              animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 rounded-[2.5rem] border border-emerald-500/20"
+            >
+              <div className="text-center space-y-4 px-6">
+                <CheckCircle2 size={50} className="text-emerald-500 mx-auto" />
+                <h3 className="text-2xl font-bold uppercase italic tracking-tight">
+                  Message Transmis
+                </h3>
+                <p className="text-zinc-400 text-[10px] font-mono tracking-[0.3em]">
+                  Vous serez recontacté dès que possible.
+                </p>
+              </div>
+            </motion.div>
+          )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {status === "error" && (
+            <motion.div
+              key="error"
+              initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+              animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 rounded-[2.5rem] border border-red-500/20"
+            >
+              <div className="text-center space-y-6 px-6">
+                <XCircle size={50} className="text-red-500 mx-auto" />
                 <div className="space-y-2">
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 ml-4">
-                    Nom
-                  </label>
+                  <h3 className="text-2xl font-bold uppercase italic tracking-tight">
+                    Erreur Système
+                  </h3>
+                  <p className="text-red-400/80 text-[11px] font-mono uppercase tracking-widest max-w-xs mx-auto">
+                    {errorMsg}
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    setStatus("idle");
+                    turnstileRef.current?.reset();
+                  }}
+                  className="px-8 py-3 bg-white text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-200 transition-all"
+                >
+                  Réessayer
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Champs de saisie */}
+        <div className="glass-card p-8 md:p-12 rounded-[2.5rem] border border-white/5 bg-zinc-900/5">
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Saisie Identité */}
+              <div className="space-y-3">
+                <label className="text-[11px] uppercase tracking-[0.2em] text-zinc-400 ml-1 font-black italic">
+                  Identité
+                </label>
+                <div className="relative group">
+                  <User
+                    className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-600 group-focus-within:text-white transition-colors"
+                    size={18}
+                  />
                   <input
                     name="name"
                     required
+                    maxLength={100}
                     type="text"
-                    placeholder="Ton nom"
-                    className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:border-white/20 transition-colors placeholder:text-zinc-800"
+                    placeholder="Votre nom"
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-14 pr-6 py-5 text-sm outline-none focus:border-white/30 focus:bg-white/[0.06] transition-all placeholder:text-zinc-600"
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 ml-4">
-                    Email
-                  </label>
+              </div>
+
+              {/* Saisie Email */}
+              <div className="space-y-3">
+                <label className="text-[11px] uppercase tracking-[0.2em] text-zinc-400 ml-1 font-black italic">
+                  Adresse Email
+                </label>
+                <div className="relative group">
+                  <AtSign
+                    className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-600 group-focus-within:text-white transition-colors"
+                    size={18}
+                  />
                   <input
                     name="email"
                     required
                     type="email"
-                    placeholder="ton@email.com"
-                    className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:border-white/20 transition-colors placeholder:text-zinc-800"
+                    placeholder="jean@exemple.com"
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-14 pr-6 py-5 text-sm outline-none focus:border-white/30 focus:bg-white/[0.06] transition-all placeholder:text-zinc-600"
                   />
                 </div>
               </div>
+            </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 ml-4">
+            {/* Saisie Message */}
+            <div className="space-y-3">
+              <div className="flex justify-between items-end px-1">
+                <label className="text-[11px] uppercase tracking-[0.2em] text-zinc-400 font-black italic">
                   Message
                 </label>
+                <span
+                  className={`text-[9px] font-mono ${charCount >= MAX_CHARS ? "text-red-500" : "text-zinc-600"}`}
+                >
+                  {charCount}/{MAX_CHARS}
+                </span>
+              </div>
+              <div className="relative group">
+                <MessageSquare
+                  className="absolute left-5 top-6 text-zinc-600 group-focus-within:text-white transition-colors"
+                  size={18}
+                />
                 <textarea
                   name="message"
                   required
+                  maxLength={MAX_CHARS}
                   rows={5}
-                  placeholder="Décris ton projet..."
-                  className="w-full bg-white/[0.03] border border-white/5 rounded-3xl px-6 py-4 text-sm focus:outline-none focus:border-white/20 transition-colors placeholder:text-zinc-800 resize-none"
+                  onChange={(e) => setCharCount(e.target.value.length)}
+                  placeholder="Décrivez votre projet..."
+                  className="w-full bg-white/[0.03] border border-white/10 rounded-[2rem] pl-14 pr-6 py-6 text-sm outline-none focus:border-white/30 focus:bg-white/[0.06] transition-all placeholder:text-zinc-600 resize-none scrollbar-none overflow-y-auto"
                 />
               </div>
+            </div>
+
+            {/* Bloc validation et envoi */}
+            <div className="flex flex-col items-center gap-8 pt-4">
+              <Turnstile
+                ref={turnstileRef}
+                // Utilisation de la variable d'environnement
+                siteKey={siteKey || ""}
+                onSuccess={(token) => {
+                  setToken(token);
+                  if (status === "error") setStatus("idle");
+                }}
+                options={{ theme: "dark" }}
+              />
 
               <button
                 type="submit"
-                disabled={status === "loading"}
-                className="group w-full bg-white text-black font-black uppercase tracking-[0.2em] py-5 rounded-2xl flex items-center justify-center gap-3 hover:bg-zinc-200 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={status === "loading" || status === "success"}
+                className="group w-full md:w-auto md:min-w-[260px] bg-white text-black font-black uppercase tracking-[0.2em] py-5 px-12 rounded-2xl flex items-center justify-center gap-3 hover:bg-zinc-200 transition-all active:scale-[0.98] disabled:opacity-50"
               >
                 {status === "loading" ? (
-                  <span className="flex items-center gap-2 italic">
-                    <Clock size={16} className="animate-spin" /> Transmission...
-                  </span>
+                  <>
+                    <Clock size={18} className="animate-spin" /> Vérification
+                  </>
                 ) : (
                   <>
                     Envoyer{" "}
                     <Send
-                      size={16}
-                      className="group-hover:translate-x-1 transition-transform"
+                      size={18}
+                      className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
                     />
                   </>
                 )}
               </button>
-            </form>
-          </div>
-        </div>
-
-        {/* SIDEBAR RÉSEAUX */}
-        <div className="lg:col-span-5 space-y-6">
-          <a
-            href="mailto:eolivarez2008@gmail.com"
-            className="block glass-card p-8 rounded-[2rem] border border-white/5 hover:bg-white/[0.05] transition-all group"
-          >
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-3 bg-white/5 rounded-xl text-zinc-400 group-hover:text-white transition-colors">
-                <Mail size={24} />
-              </div>
-              <ArrowUpRight
-                size={20}
-                className="text-zinc-800 group-hover:text-white transition-all"
-              />
             </div>
-            <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-1">
-              Direct Contact
-            </p>
-            <p className="text-lg font-bold">eolivarez2008@gmail.com</p>
-          </a>
-
-          <div className="grid grid-cols-2 gap-4">
-            <a
-              href="https://github.com/eolivarez2008"
-              target="_blank"
-              className="glass-card p-6 rounded-[2rem] border border-white/5 flex flex-col items-center justify-center gap-4 hover:bg-white/[0.05] transition-all group text-zinc-500 hover:text-white"
-            >
-              <Github size={28} />
-              <span className="text-[10px] font-mono uppercase tracking-widest">
-                GitHub
-              </span>
-            </a>
-            <a
-              href="https://www.linkedin.com/in/emilien-olivarez-aa9720397"
-              target="_blank"
-              className="glass-card p-6 rounded-[2rem] border border-white/5 flex flex-col items-center justify-center gap-4 hover:bg-white/[0.05] transition-all group text-zinc-500 hover:text-white"
-            >
-              <Linkedin size={28} />
-              <span className="text-[10px] font-mono  uppercase tracking-widest">
-                LinkedIn
-              </span>
-            </a>
-          </div>
-
-          <div className="glass-card p-8 rounded-[2rem] border border-white/5 bg-gradient-to-br from-indigo-500/5 to-transparent relative overflow-hidden group">
-            <div className="flex items-center gap-4 mb-4 text-indigo-400">
-              <Discord size={24} />
-              <span className="text-[10px] font-mono uppercase tracking-widest font-bold">
-                Discord Community
-              </span>
-            </div>
-            <p className="text-zinc-400 text-sm leading-relaxed">
-              Pour une réponse instantanée ou discuter dev & muscu.
-              <span className="text-white font-bold mt-2 block font-mono">
-                @ems.lvrz
-              </span>
-            </p>
-            <Discord
-              size={80}
-              className="absolute -bottom-4 -right-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity"
-            />
-          </div>
+          </form>
         </div>
-      </div>
+      </section>
     </main>
   );
 }
