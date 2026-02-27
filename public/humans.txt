@@ -1,0 +1,12 @@
+/* TEAM */
+Chef de projet & Développeur : Emilien OLIVAREZ
+Site : eolivarez.site
+Localisation : Metz, France
+
+/* THANKS */
+Next.js, Tailwind CSS, Framer Motion
+
+/* SITE */
+Dernière mise à jour : 2026/02/27
+Logiciel : VS Code
+Standard : HTML5, CSS3, TypeScript

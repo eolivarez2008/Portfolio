@@ -8,11 +8,13 @@ import "./globals.css";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
 });
 
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  display: "swap",
 });
 
 // Définition des métadonnées pour le SEO et l'indexation
@@ -22,6 +24,19 @@ export const metadata: Metadata = {
     template: "Emilien OLIVAREZ | %s ",
   },
   description: "Élève en Bac Pro CIEL - Portfolio de projets et réalisations",
+  keywords: [
+    "Emilien OLIVAREZ",
+    "Bac Pro CIEL",
+    "portfolio",
+    "projets",
+    "réalisations",
+    "développement web",
+    "programmation",
+  ],
+  authors: [{ name: "Emilien OLIVAREZ", url: "https://eolivarez.site" }],
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 // Layout racine de l'application

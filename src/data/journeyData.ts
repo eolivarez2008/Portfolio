@@ -1,6 +1,3 @@
-import React from "react";
-import { Briefcase, GraduationCap } from "lucide-react";
-
 // Types pour le parcours
 export interface JourneyItem {
   date: string;
@@ -98,51 +95,47 @@ export const ARCHIVES: ArchiveFolder[] = [
     items: [
       {
         name: "Bulletin 3e trimestre 1",
-        file: "/Bulletins/Bulletin 3e trimestre 1.pdf",
+        file: "/Bulletins/bulletin-3e-trimestre-1.pdf",
       },
       {
         name: "Bulletin 3e trimestre 2",
-        file: "/Bulletins/Bulletin 3e trimestre 2.pdf",
+        file: "/Bulletins/bulletin-3e-trimestre-2.pdf",
       },
       {
         name: "Bulletin 3e trimestre 3",
-        file: "/Bulletins/Bulletin 3e trimestre 3.pdf",
+        file: "/Bulletins/bulletin-3e-trimestre-3.pdf",
       },
       {
         name: "Bulletin 4e trimestre 1",
-        file: "/Bulletins/Bulletin 4e trimestre 1.pdf",
+        file: "/Bulletins/bulletin-4e-trimestre-1.pdf",
       },
       {
         name: "Bulletin 4e trimestre 2",
-        file: "/Bulletins/Bulletin 4e trimestre 2.pdf",
+        file: "/Bulletins/bulletin-4e-trimestre-2.pdf",
       },
       {
         name: "Bulletin 4e trimestre 3",
-        file: "/Bulletins/Bulletin 4e trimestre 3.pdf",
+        file: "/Bulletins/bulletin-4e-trimestre-3.pdf",
       },
       {
         name: "Bulletin 5e trimestre 1",
-        file: "/Bulletins/Bulletin 5e trimestre 1.pdf",
+        file: "/Bulletins/bulletin-5e-trimestre-1.pdf",
       },
       {
         name: "Bulletin 5e trimestre 2",
-        file: "/Bulletins/Bulletin 5e trimestre 2.pdf",
-      },
-      {
-        name: "Bulletin 5e trimestre 3",
-        file: "/Bulletins/Bulletin 5e trimestre 3.pdf",
+        file: "/Bulletins/bulletin-5e-trimestre-2.pdf",
       },
       {
         name: "Bulletin 6e trimestre 1",
-        file: "/Bulletins/Bulletin 6e trimestre 1.pdf",
+        file: "/Bulletins/bulletin-6e-trimestre-1.pdf",
       },
       {
         name: "Bulletin 6e trimestre 2",
-        file: "/Bulletins/Bulletin 6e trimestre 2.pdf",
+        file: "/Bulletins/bulletin-6e-trimestre-2.pdf",
       },
       {
         name: "Bulletin 6e trimestre 3",
-        file: "/Bulletins/Bulletin 6e trimestre 3.pdf",
+        file: "/Bulletins/bulletin-6e-trimestre-3.pdf",
       },
     ],
   },
@@ -151,31 +144,31 @@ export const ARCHIVES: ArchiveFolder[] = [
     items: [
       {
         name: "Bulletin Terminale Semestre 1",
-        file: "/Bulletins/Bulletin Terminale 1.pdf",
+        file: "/Bulletins/bulletin-terminale-semestre-1.pdf",
       },
       {
         name: "Bulletin 1ère Semestre 1",
-        file: "/Bulletins/Bulletin 1ere semestre 1.pdf",
+        file: "/Bulletins/bulletin-1ere-semestre-1.pdf",
       },
       {
         name: "Bulletin 1ère Semestre 2",
-        file: "/Bulletins/Bulletin 1ere semestre 2.pdf",
+        file: "/Bulletins/bulletin-1ere-semestre-2.pdf",
       },
       {
         name: "Bulletin 2nde Semestre 1",
-        file: "/Bulletins/Bulletin 2nde semestre 1.pdf",
+        file: "/Bulletins/bulletin-2nde-semestre-1.pdf",
       },
       {
         name: "Bulletin 2nde Semestre 2",
-        file: "/Bulletins/Bulletin 2nde semestre 2.pdf",
+        file: "/Bulletins/bulletin-2nde-semestre-2.pdf",
       },
     ],
   },
   {
     category: "Diplômes & Certifs",
     items: [
-      { name: "Diplôme du Brevet", file: "/Diplôme National du Brevet .pdf" },
-      { name: "Certification PIX", file: "/Certification PIX.pdf" },
+      { name: "Diplôme du Brevet", file: "/diplome-national-du-brevet.pdf" },
+      { name: "Certification PIX", file: "/certification-pix.pdf" },
     ],
   },
 ];

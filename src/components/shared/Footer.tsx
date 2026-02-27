@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { Command, ArrowRight, Layout, Scale, Copyright } from "lucide-react";
 
@@ -38,7 +36,8 @@ export function Footer() {
               </div>
               <p className="text-zinc-500 text-[13px] leading-relaxed max-w-sm">
                 Spécialisé en Cybersécurité, Informatique et Réseaux. Création
-                d'interfaces minimalistes et gestion d'infrastructures.
+                d&apos;interfaces minimalistes et gestion
+                d&apos;infrastructures.
               </p>
             </div>
 
@@ -61,22 +60,24 @@ export function Footer() {
               </h4>
             </div>
 
-            <ul className="space-y-3 flex flex-col items-center md:items-start w-full">
-              {FOOTER_LINKS.navigation.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="group flex items-center gap-2 text-[12px] text-zinc-500 hover:text-white transition-all w-fit"
-                  >
-                    <ArrowRight
-                      size={10}
-                      className="hidden md:block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-white"
-                    />
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <nav aria-label="Navigation de pied de page">
+              <ul className="space-y-3 flex flex-col items-center md:items-start w-full">
+                {FOOTER_LINKS.navigation.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      href={link.href}
+                      className="group flex items-center gap-2 text-[12px] text-zinc-500 hover:text-white transition-all w-fit"
+                    >
+                      <ArrowRight
+                        size={10}
+                        className="hidden md:block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-white"
+                      />
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
 
           {/* COLONNE LÉGAL */}
@@ -90,22 +91,24 @@ export function Footer() {
               </h4>
             </div>
 
-            <ul className="space-y-3 flex flex-col items-center md:items-start w-full">
-              {FOOTER_LINKS.legal.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="group flex items-center gap-2 text-[12px] text-zinc-500 hover:text-white transition-all w-fit"
-                  >
-                    <ArrowRight
-                      size={10}
-                      className="hidden md:block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-white"
-                    />
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <nav aria-label="Liens légaux">
+              <ul className="space-y-3 flex flex-col items-center md:items-start w-full">
+                {FOOTER_LINKS.legal.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      href={link.href}
+                      className="group flex items-center gap-2 text-[12px] text-zinc-500 hover:text-white transition-all w-fit"
+                    >
+                      <ArrowRight
+                        size={10}
+                        className="hidden md:block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-white"
+                      />
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
         </div>
       </div>
