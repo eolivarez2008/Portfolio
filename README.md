@@ -39,19 +39,62 @@ Le projet s’appuie sur un environnement **full-stack React moderne**, orienté
 - **Web analytics** : [Umami](https://umami.is/) — Solution open-source d’analyse d’audience, légère et respectueuse de la vie privée, auto-hébergée.
 - **Hébergement & Infra** : [Docker](https://www.docker.com/) — Containerisation du site statique avec un serveur Nginx optimisé, auto-hébergé sur une VM dédiée.
 - **Réseau & Sécurité** : [Cloudflare Tunnel](https://www.cloudflare.com/products/tunnel/) — Exposition sécurisée du service sans ouverture de ports (Zero Trust), protection contre les attaques et gestion automatique du certificat SSL.
+- **Protection Formulaire** : [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) — Alternative respectueuse de la vie privée à reCAPTCHA, avec une intégration invisible pour l'utilisateur.
+- **Monitoring de Contact** : [Webhook Discord](https://support.discord.com/hc/fr/articles/228383668-Introduction-aux-Webhooks) — Système de notification instantané avec logs de transmission formatés (Style Console).
+
+---
+
+## Installation et Configuration
+
+1. Clonage du projet
+
+```bash
+git clone https://github.com/eolivarez2008/Portfolio.git
+cd Portfolio
+```
+
+2. Installation des dépendances
+
+```bash
+npm install
+```
+
+3. Configuration des variables d'environnement
+
+Création du fichier .env.local à la racine du projet
+
+```bash
+# Cloudflare Turnstile (Captcha)
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=votre_cle_publique
+TURNSTILE_SECRET_KEY=votre_cle_secrete
+
+# Notifications Discord
+DISCORD_WEBHOOK_URL=votre-webhook_url
+
+# Monitoring du serveur avec Uptime Kuma
+UPTIME_KUMA_URL=votre-utpime_kuma_url
+```
+
+4. Lancer le serveur de développement
+
+```bash
+npm run dev
+```
+
+Le projet sera accessible sur http://localhost:3000
 
 ---
 
 ## Auteur
 
-Développé par **Emilien Olivarez** – Étudiant en Bac Pro CIEL (ex-SN)  
+Développé par **Emilien Olivarez** – Étudiant en Bac Pro CIEL (ex-SN)
 Lycée Louis de Cormontaigne, Metz
 
 ---
 
 ## Licence
 
-Ce projet est sous licence **MIT**.  
+Ce projet est sous licence **MIT**.
 Vous pouvez :
 
 - utiliser librement les fichiers,
@@ -59,5 +102,9 @@ Vous pouvez :
 - les redistribuer,
 - y compris pour un usage commercial,
 
-à condition de respecter les termes de la licence MIT :  
+à condition de respecter les termes de la licence MIT :
 https://opensource.org/licenses/MIT
+
+```
+
+```
