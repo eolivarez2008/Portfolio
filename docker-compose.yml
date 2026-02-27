@@ -5,6 +5,8 @@ services:
     container_name: portfolio
     restart: always
     ports:
-      - "127.0.0.1:3000:3000"
+      - 127.0.0.1:3000:3000
     environment:
       - NODE_ENV=production
+    env_file:
+      - .env.local

@@ -1,8 +1,7 @@
 # PORTFOLIO – Site web personnel
 
-Bienvenue sur le dépôt de mon **portfolio personnel**. Conçu comme une interface high-tech minimaliste, ce site est le hub central de mes réalisations en développement, infrastructure et cybersécurité.
-
-Ce projet est bien plus qu'un simple CV en ligne. C'est un **Dashboard de navigation** conçu pour refléter mon parcours en **Bac Pro CIEL** (Cybersécurité, Informatique, Électronique et Réseaux).
+Bienvenue sur le dépôt de mon **portfolio personnel**.
+Ce projet est bien plus qu'un simple CV en ligne : ce site est le hub central de mes réalisations en développement, infrastructure et cybersécurité.
 
 Le site propose une expérience immersive basée sur une esthétique "High-Tech" et minimaliste, structurée autour de plusieurs modules clés :
 
@@ -104,7 +103,3 @@ Vous pouvez :
 
 à condition de respecter les termes de la licence MIT :
 https://opensource.org/licenses/MIT
-
-```
-
-```
