@@ -16,7 +16,6 @@ import {
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  // On supprime le state "mounted" qui bloque le rendu serveur
   const pathname = usePathname();
 
   useEffect(() => {
@@ -65,7 +64,6 @@ export function Navbar() {
                 isOpen
                   ? "max-h-[500px] opacity-100 pt-2 pb-2"
                   : "max-h-0 opacity-0 lg:max-h-none lg:opacity-100 lg:visible"
-                // on retire le invisible pour que le serveur l'affiche en desktop
               }
             `}
           >

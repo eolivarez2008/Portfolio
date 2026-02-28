@@ -20,23 +20,35 @@ const jetbrains = JetBrains_Mono({
 
 // Définition des métadonnées pour le SEO et l'indexation
 export const metadata: Metadata = {
+  metadataBase: new URL("https://eolivarez.site"),
   title: {
     default: "Emilien OLIVAREZ",
-    template: "Emilien OLIVAREZ | %s ",
+    template: "%s | Emilien OLIVAREZ",
   },
   description: "Élève en Bac Pro CIEL - Portfolio de projets et réalisations",
   keywords: [
     "Emilien OLIVAREZ",
     "Bac Pro CIEL",
     "portfolio",
-    "projets",
-    "réalisations",
     "développement web",
-    "programmation",
   ],
-  authors: [{ name: "Emilien OLIVAREZ", url: "https://eolivarez.site" }],
-  icons: {
-    icon: "/favicon.ico",
+  authors: [{ name: "Emilien OLIVAREZ" }],
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    url: "https://eolivarez.site",
+    siteName: "Emilien OLIVAREZ",
+    images: [
+      {
+        url: "/og-portfolio.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-portfolio.png"],
   },
 };
 
@@ -47,6 +59,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    // Requis pour next-themes pour empecher les problèmes d'hydratation
     <html lang="fr" suppressHydrationWarning>
       <head>
         <Script
