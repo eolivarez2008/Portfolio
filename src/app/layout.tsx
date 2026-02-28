@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { Navbar } from "@/components/shared/Navbar";
 import { Footer } from "@/components/shared/Footer";
 import "./globals.css";
+import Script from "next/script";
 
 // Configuration des polices Google
 const inter = Inter({
@@ -47,6 +48,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" suppressHydrationWarning>
+      <head>
+        <Script
+          async
+          src="https://umami.realbus.fr/script.js"
+          data-website-id="882c953e-0838-4d1e-b05e-f2daced2d64f"
+          strategy="afterInteractive"
+        />
+      </head>
       <body
         className={`${inter.variable} ${jetbrains.variable} font-sans antialiased bg-black min-h-screen flex flex-col`}
       >
