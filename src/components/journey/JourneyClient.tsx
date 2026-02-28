@@ -28,10 +28,21 @@ export default function JourneyPageClient() {
 
   const filteredJourney = JOURNEY.filter((item) => item.type === filter);
 
+  // check si mobile pour ouvrir pdf direct en nouvel onglet
+  const handleOpenDoc = (file: string, name: string) => {
+    trackEvent("archive-view", { doc_name: name });
+
+    if (window.innerWidth < 768) {
+      window.open(file, "_blank", "noopener,noreferrer");
+    } else {
+      setSelectedDoc(file);
+    }
+  };
+
   return (
     <main className="min-h-screen pt-28 md:pt-40 px-4 md:px-6 max-w-6xl mx-auto pb-32 text-white selection:bg-white selection:text-black">
-      {/* Header narratif */}
-      <div className="mb-16 text-left md:text-center">
+      {/* Ajout titre narratif et intro perso */}
+      <div className="mb-12 text-left md:text-center">
         <motion.h1
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -47,25 +58,23 @@ export default function JourneyPageClient() {
           className="space-y-4 max-w-3xl mx-auto"
         >
           <p className="text-zinc-400 text-sm md:text-base leading-relaxed font-medium">
-            Mon histoire a débuté en Moselle, où j&apos;ai effectué mes
-            premières années de collège à{" "}
-            <span className="text-white">Rombas</span> au collège{" "}
-            <span className="text-white">Julie Daubié</span>. C&apos;est en
-            classe de 4ème que j&apos;ai rejoint{" "}
-            <span className="text-white">Metz</span> et le collège{" "}
-            <span className="text-white">Jean Rostand</span>.
+            Après mes premières années au collège{" "}
+            <span className="text-white">Julie Daubié (Rombas)</span>,
+            c&apos;est à <span className="text-white">Metz</span> que ma passion
+            pour l&apos;informatique s&apos;est concretisée.
           </p>
           <p className="text-zinc-400 text-sm md:text-base leading-relaxed font-medium">
-            Aujourd&apos;hui, je suis élève en{" "}
+            Actuellement étudiant en{" "}
             <span className="text-white">Bac Pro CIEL</span> au lycée{" "}
-            <span className="text-white">Louis de Cormontaigne</span> à Metz.
+            <span className="text-white">Louis de Cormontaigne (Metz)</span>, je
+            transforme cette passion en compétences technique entre
+            développement web et création de jeux vidéo.
           </p>
         </motion.div>
         <div className="h-[1px] w-12 bg-zinc-800 mx-0 md:mx-auto mt-8" />
       </div>
-
-      {/* Switch Expériences / Formation */}
-      <div className="flex justify-center mb-24">
+      {/* Ajout switch toggle pour filtrer par type (taf ou ecole) */}
+      <div className="flex justify-center mb-20">
         <div className="flex p-1.5 bg-zinc-900/80 border border-white/10 rounded-full w-full max-w-[320px] relative backdrop-blur-xl">
           {(["work", "edu"] as const).map((tab) => (
             <button
@@ -89,8 +98,7 @@ export default function JourneyPageClient() {
           ))}
         </div>
       </div>
-
-      {/* Timeline interactive */}
+      {/* Ajout timeline responsive avec anim framer motion */}
       <div className="relative mb-32 w-full">
         <div className="absolute left-[31px] md:left-1/2 top-0 bottom-0 w-[1px] bg-zinc-800 md:-translate-x-1/2" />
         <div className="space-y-10 md:space-y-0">
@@ -151,8 +159,7 @@ export default function JourneyPageClient() {
           </AnimatePresence>
         </div>
       </div>
-
-      {/* Section Archives et Documents */}
+      {/* Ajout section archives et gestion docs pdf */}
       <section className="pt-24 border-t border-zinc-900">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tighter uppercase italic flex items-center gap-4 mb-16">
           <FolderOpen size={28} /> Archives
@@ -182,10 +189,7 @@ export default function JourneyPageClient() {
                         style={{ overflow: "hidden" }}
                       >
                         <button
-                          onClick={() => {
-                            setSelectedDoc(doc.file);
-                            trackEvent("archive-view", { doc_name: doc.name });
-                          }}
+                          onClick={() => handleOpenDoc(doc.file, doc.name)}
                           className="w-full flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/20 transition-all text-left group mb-1"
                         >
                           <div className="flex items-center gap-3 overflow-hidden">
@@ -238,7 +242,6 @@ export default function JourneyPageClient() {
           })}
         </div>
 
-        {/* Bouton global pour Desktop */}
         <div className="hidden lg:flex justify-center mt-12">
           <button
             onClick={() => {
@@ -253,8 +256,7 @@ export default function JourneyPageClient() {
           </button>
         </div>
       </section>
-
-      {/* Modal Visualiseur PDF */}
+      {/* Ajout modal visionneuse avec iframe pour desktop */}
       <AnimatePresence>
         {selectedDoc && (
           <motion.div
@@ -271,6 +273,8 @@ export default function JourneyPageClient() {
                 <div className="flex items-center gap-4">
                   <a
                     href={selectedDoc}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     download
                     onClick={() =>
                       trackEvent("archive-download", { file: selectedDoc })
@@ -287,7 +291,11 @@ export default function JourneyPageClient() {
                   </button>
                 </div>
               </div>
-              <iframe src={selectedDoc} className="w-full h-full bg-white" />
+              <iframe
+                src={selectedDoc}
+                className="w-full h-full bg-white"
+                title="Visionneuse PDF"
+              />
             </div>
           </motion.div>
         )}

@@ -31,7 +31,7 @@
     scrollbar-width: none;
   }
 
-  /* Animation de scanline optionnelle pour le look terminal */
+  /* Animation de scanline */
   .scanline {
     width: 100%;
     height: 100px;

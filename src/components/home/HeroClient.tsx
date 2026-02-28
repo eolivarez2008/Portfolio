@@ -27,8 +27,8 @@ export default function HeroClient() {
             transition={{ delay: 0.2 }}
             className="text-base md:text-xl text-zinc-400 max-w-md md:max-w-xl leading-relaxed font-medium"
           >
-            Élève en Bac Pro CIEL. Je me forme au développement web et aux
-            systèmes embarqués.
+            Élève en Bac Pro CIEL, je me forme au développement web et à la
+            création de jeux vidéo en autodidacte.
           </motion.p>
 
           <div className="flex flex-row gap-3 md:gap-4 pt-2">
@@ -55,13 +55,13 @@ export default function HeroClient() {
 
         <div className="relative h-[250px] md:h-[320px] w-full hidden sm:block">
           <QuoteCard
-            text="La parole ne coûte rien. Montrez-moi le code."
-            author="Linus Torvalds"
+            text="Le code est comme l'humour. Quand on doit l'expliquer, c'est qu'il est mauvais."
+            author="Cory House"
             className="top-0 left-0 rotate-[-4deg]"
           />
           <QuoteCard
-            text="Le design est la façon dont ça fonctionne."
-            author="Steve Jobs"
+            text="La meilleure façon d'apprendre à programmer est de programmer."
+            author="Nicholas Wirth"
             className="bottom-4 right-0 rotate-[4deg]"
           />
         </div>

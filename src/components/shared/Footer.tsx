@@ -1,14 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Command,
-  ArrowRight,
-  Layout,
-  Scale,
-  Copyright,
-  Target,
-} from "lucide-react";
+import { Command, ArrowRight, Layout, Scale, Copyright } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 
 const FOOTER_LINKS = {

@@ -23,9 +23,20 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
   try {
     const res = await fetch(
       "https://api.github.com/users/eolivarez2008/repos?sort=updated&per_page=10",
-      { next: { revalidate: 3600 } },
+      {
+        next: { revalidate: 3600 },
+        headers: {
+          "User-Agent": "eolivarez-portfolio",
+        },
+      },
     );
-    if (!res.ok) return [];
+
+    // Détection et Log des erreurs d'API
+    if (!res.ok) {
+      const errorBody = await res.text().catch(() => "No error body");
+      console.error(`[GitHub API] Failure ${res.status}: ${errorBody}`);
+      return [];
+    }
 
     const data: GithubApiResponse[] = await res.json();
 
@@ -41,9 +52,7 @@ export async function getGithubRepos(): Promise<GithubRepo[]> {
         language: repo.language || "TypeScript",
       }));
   } catch (error) {
-    if (process.env.NODE_ENV === "development") {
-      console.error("Erreur lors de la récupération des repos GitHub:", error);
-    }
+    console.error("Critical Error fetching GitHub repos:", error);
     return [];
   }
 }

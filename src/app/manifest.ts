@@ -4,7 +4,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Emilien OLIVAREZ Portfolio",
     short_name: "EO Portfolio",
-    description: "Portfolio de projets et réalisations - Emilien OLIVAREZ",
+    description:
+      "Site web portfolio qui présente mes projets, mon parcours et mes compétences en développement web et systèmes embarqués.",
     start_url: "/",
     display: "standalone",
     background_color: "#000000",

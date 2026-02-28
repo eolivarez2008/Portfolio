@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Home, ArrowLeft, Terminal } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 export default function NotFound() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-6 bg-black text-white selection:bg-white selection:text-black pt-32 pb-16">
       <div className="text-center w-full max-w-4xl mx-auto space-y-12 md:space-y-16">
-        {/* GROS 404 - Opacité réduite pour le style minimaliste */}
+        {/* GROS 404 */}
         <motion.h1
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 0.1, y: 0 }}
@@ -48,6 +49,7 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
           <Link
             href="/"
+            onClick={() => trackEvent("notfound-home-cta")}
             className="group flex items-center gap-3 bg-white text-black px-8 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-zinc-200 transition-all active:scale-95 text-xs"
           >
             <Home size={16} />
@@ -55,7 +57,10 @@ export default function NotFound() {
           </Link>
 
           <button
-            onClick={() => window.history.back()}
+            onClick={() => {
+              trackEvent("notfound-back-cta");
+              window.history.back();
+            }}
             className="flex items-center gap-3 text-zinc-500 hover:text-white transition-colors uppercase font-bold tracking-widest text-[10px]"
           >
             <ArrowLeft size={14} />

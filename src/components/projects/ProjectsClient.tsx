@@ -46,20 +46,31 @@ export default function ProjectsClient() {
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-5 gap-10 md:gap-12 items-center">
             <div className="lg:col-span-3 space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-zinc-300 text-[10px] font-mono tracking-widest uppercase">
-                <Server size={12} /> System Administrator
+                <Server size={12} /> Root Access & Orchestration
               </div>
               <h1 className="text-4xl md:text-7xl font-bold tracking-tighter leading-tight md:leading-none">
-                Infrastructure <br />
+                Full Stack <br />
                 <span className="text-zinc-400 italic font-light tracking-normal">
-                  Self-Hosted.
+                  Deployment.
                 </span>
               </h1>
-              <p className="text-zinc-300 text-base md:text-lg leading-relaxed max-w-xl">
-                Gestion d&apos;un cloud privé sous Linux. De
-                l&apos;orchestration Docker aux tunnels Cloudflare.
+              <p className="text-zinc-300 text-base md:text-lg leading-relaxed max-w-xl font-medium">
+                Administration d&apos;une infrastructure Debian dédiée.
+                Déploiement de services conteneurisés via
+                <span className="text-white"> Docker Compose</span>, sécurisés
+                par un reverse proxy
+                <span className="text-white"> Nginx</span> et une exposition via
+                tunnels
+                <span className="text-white"> Cloudflare</span>.
               </p>
               <div className="flex flex-wrap gap-2 pt-2">
-                {["Linux", "Docker", "Nginx", "Cloudflare"].map((tech) => (
+                {[
+                  "Linux",
+                  "Docker-Compose",
+                  "Reverse Proxy",
+                  "DNS Config",
+                  "Cloudflare Zero Trust",
+                ].map((tech) => (
                   <span
                     key={tech}
                     onClick={() => trackEvent("infra-tech-click", { tech })}
