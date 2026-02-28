@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { trackEvent } from "@/lib/analytics";
 import {
   Home,
   GraduationCap,
@@ -44,8 +45,11 @@ export function Navbar() {
               BAC PRO CIEL
             </span>
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label="Menu" // ajout accessibilité pour PageSpeed
+              onClick={() => {
+                setIsOpen(!isOpen);
+                trackEvent("navbar_menu_toggle", { open: !isOpen });
+              }}
+              aria-label="Menu"
               className="text-white p-2 hover:bg-white/5 rounded-full transition-colors active:scale-95"
             >
               {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -72,7 +76,10 @@ export function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => {
+                    setIsOpen(false);
+                    trackEvent("navbar_link_click", { link: link.name });
+                  }}
                   className={`
                     flex items-center gap-3
                     px-5 py-2.5 lg:px-6 lg:py-3

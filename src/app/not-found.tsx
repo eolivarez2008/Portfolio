@@ -8,12 +8,12 @@ export default function NotFound() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-6 bg-black text-white selection:bg-white selection:text-black pt-32 pb-16">
       <div className="text-center w-full max-w-4xl mx-auto space-y-12 md:space-y-16">
-        {/* GROS 404 */}
+        {/* GROS 404 - Opacité réduite pour le style minimaliste */}
         <motion.h1
           initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={{ opacity: 0.1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="text-[8rem] sm:text-[14rem] md:text-[17rem] font-bold tracking-tighter leading-none italic opacity-10 select-none"
+          className="text-[8rem] sm:text-[14rem] md:text-[17rem] font-bold tracking-tighter leading-none italic select-none"
         >
           404
         </motion.h1>
