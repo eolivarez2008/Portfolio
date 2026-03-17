@@ -22,16 +22,18 @@ interface GithubApiResponse {
 export async function getGithubRepos(): Promise<GithubRepo[]> {
   try {
     const res = await fetch(
-      "https://api.github.com/users/eolivarez2008/repos?sort=updated&per_page=10",
+      "https://api.github.com/users/eolivarez2008/repos?sort=updated&per_page=20",
       {
-        next: { revalidate: 3600 },
+        next: { revalidate: 300 },
         headers: {
           "User-Agent": "eolivarez-portfolio",
+          ...(process.env.GITHUB_TOKEN && {
+            Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+          }),
         },
       },
     );
 
-    // Détection et Log des erreurs d'API
     if (!res.ok) {
       const errorBody = await res.text().catch(() => "No error body");
       console.error(`[GitHub API] Failure ${res.status}: ${errorBody}`);

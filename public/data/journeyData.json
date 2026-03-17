@@ -1,0 +1,117 @@
+{
+  "journey": [
+    {
+      "date": "2024 — Aujourd'hui",
+      "title": "Stage Développeur Web",
+      "location": "Metz, France",
+      "description": "Développement d'interfaces web modernes et gestion d'infrastructure.",
+      "icon": "work",
+      "type": "work",
+      "skills": ["Next.js", "React", "Docker"]
+    },
+    {
+      "date": "2022 — Aujourd'hui",
+      "title": "Bac Pro CIEL",
+      "location": "Lycée Louis de Cormontaigne, Metz",
+      "description": "Formation en Cybersécurité, Informatique et réseaux, Électronique et systèmes embarqués.",
+      "icon": "edu",
+      "type": "edu",
+      "skills": ["Réseaux", "Électronique", "Linux"]
+    },
+    {
+      "date": "2023",
+      "title": "Brevet des Collèges",
+      "location": "Collège Jean Rostand, Metz",
+      "description": "Diplôme National du Brevet (Série Générale). Validation du socle commun de compétences avec Mention Très Bien.",
+      "icon": "edu",
+      "type": "edu",
+      "skills": []
+    }
+  ],
+  "archives": [
+    {
+      "category": "Collège",
+      "items": [
+        {
+          "name": "Bulletin 3e trimestre 1",
+          "file": "/Bulletins/bulletin-3e-trimestre-1.pdf"
+        },
+        {
+          "name": "Bulletin 3e trimestre 2",
+          "file": "/Bulletins/bulletin-3e-trimestre-2.pdf"
+        },
+        {
+          "name": "Bulletin 3e trimestre 3",
+          "file": "/Bulletins/bulletin-3e-trimestre-3.pdf"
+        },
+        {
+          "name": "Bulletin 4e trimestre 1",
+          "file": "/Bulletins/bulletin-4e-trimestre-1.pdf"
+        },
+        {
+          "name": "Bulletin 4e trimestre 2",
+          "file": "/Bulletins/bulletin-4e-trimestre-2.pdf"
+        },
+        {
+          "name": "Bulletin 4e trimestre 3",
+          "file": "/Bulletins/bulletin-4e-trimestre-3.pdf"
+        },
+        {
+          "name": "Bulletin 5e trimestre 1",
+          "file": "/Bulletins/bulletin-5e-trimestre-1.pdf"
+        },
+        {
+          "name": "Bulletin 5e trimestre 2",
+          "file": "/Bulletins/bulletin-5e-trimestre-2.pdf"
+        },
+        {
+          "name": "Bulletin 6e trimestre 1",
+          "file": "/Bulletins/bulletin-6e-trimestre-1.pdf"
+        },
+        {
+          "name": "Bulletin 6e trimestre 2",
+          "file": "/Bulletins/bulletin-6e-trimestre-2.pdf"
+        },
+        {
+          "name": "Bulletin 6e trimestre 3",
+          "file": "/Bulletins/bulletin-6e-trimestre-3.pdf"
+        }
+      ]
+    },
+    {
+      "category": "Lycée (Bac Pro CIEL)",
+      "items": [
+        {
+          "name": "Bulletin Terminale Semestre 1",
+          "file": "/Bulletins/bulletin-terminale-semestre-1.pdf"
+        },
+        {
+          "name": "Bulletin 1ère Semestre 1",
+          "file": "/Bulletins/bulletin-1ere-semestre-1.pdf"
+        },
+        {
+          "name": "Bulletin 1ère Semestre 2",
+          "file": "/Bulletins/bulletin-1ere-semestre-2.pdf"
+        },
+        {
+          "name": "Bulletin 2nde Semestre 1",
+          "file": "/Bulletins/bulletin-2nde-semestre-1.pdf"
+        },
+        {
+          "name": "Bulletin 2nde Semestre 2",
+          "file": "/Bulletins/bulletin-2nde-semestre-2.pdf"
+        }
+      ]
+    },
+    {
+      "category": "Diplômes & Certifs",
+      "items": [
+        {
+          "name": "Diplôme du Brevet",
+          "file": "/diplome-national-du-brevet.pdf"
+        },
+        { "name": "Certification PIX", "file": "/certification-pix.pdf" }
+      ]
+    }
+  ]
+}

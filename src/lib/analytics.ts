@@ -1,4 +1,3 @@
-// Utilitaire simple pour envoyer des événements à Umami
 type Umami = {
   track: (eventName: string, eventData?: Record<string, unknown>) => void;
 };

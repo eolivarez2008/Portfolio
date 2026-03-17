@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Server, Shield } from "lucide-react";
+import { Server, Shield, ArrowUpRight } from "lucide-react";
 import { GithubRepo } from "@/lib/github";
 import { ProjectCard } from "./ProjectCard";
 import { trackEvent } from "@/lib/analytics";
@@ -82,19 +82,28 @@ export default function ProjectsClient() {
               </div>
             </div>
 
+            {/* Monitoring */}
             <div className="lg:col-span-2">
-              <div className="bg-black/60 border border-white/10 rounded-[2rem] p-6 shadow-2xl">
+              <a
+                href={process.env.NEXT_PUBLIC_UPTIME_KUMA_PUBLIC_URL || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent("monitoring-click")}
+                className="block bg-black/60 border border-white/10 rounded-[2rem] p-6 shadow-2xl hover:border-white/30 transition-all group cursor-pointer"
+              >
                 <h3 className="text-[10px] font-mono text-zinc-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
                   <Shield size={10} className="text-white" /> Active_Monitoring
+                  <ArrowUpRight
+                    size={10}
+                    className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-white"
+                  />
                 </h3>
+
                 <div className="relative h-[160px] md:h-[200px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]">
                   <div className="flex flex-col gap-2 animate-marquee-vertical">
                     {[...services, ...services].map((s, i) => (
                       <div
                         key={i}
-                        onClick={() =>
-                          trackEvent("status-check", { service: s.name })
-                        }
                         className="flex items-center justify-between p-3 bg-white/5 border border-white/5 rounded-xl"
                       >
                         <span className="text-xs font-semibold text-zinc-200">
@@ -107,7 +116,7 @@ export default function ProjectsClient() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </a>
             </div>
           </div>
         </section>

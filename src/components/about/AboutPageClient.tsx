@@ -1,13 +1,42 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Code2, Dumbbell, Target, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { TECH_STACK, ROADMAP_STEPS } from "@/data/aboutData";
 import { trackEvent } from "@/lib/analytics";
 
+// Types inline (aboutData.ts est maintenant vide, on type ici)
+interface TechItem {
+  name: string;
+  icon: string;
+}
+
+interface RoadmapStep {
+  title: string;
+  date: string;
+  active: boolean;
+  placeholder?: boolean;
+}
+
 export default function AboutPageClient() {
+  // Chargement dynamique depuis le JSON admin (modifiable sans redéploiement)
+  const [techStack, setTechStack] = useState<TechItem[]>([]);
+  const [roadmapSteps, setRoadmapSteps] = useState<RoadmapStep[]>([]);
+
+  useEffect(() => {
+    fetch("/api/admin/about")
+      .then((r) => r.json())
+      .then((d) => {
+        setTechStack(d.techStack ?? []);
+        setRoadmapSteps(d.roadmapSteps ?? []);
+      })
+      .catch(() => {
+        // Silencieux : le composant reste vide si l'API échoue
+      });
+  }, []);
+
   return (
     <main className="min-h-screen pt-28 md:pt-40 pb-20 text-white selection:bg-white selection:text-black overflow-x-hidden">
       {/* SECTION 1 : BIOGRAPHIE & ROADMAP */}
@@ -55,7 +84,7 @@ export default function AboutPageClient() {
               </h3>
               <div className="space-y-8 relative">
                 <div className="absolute left-[7px] top-2 bottom-2 w-[1px] bg-white/10" />
-                {ROADMAP_STEPS.map((step, index) => (
+                {roadmapSteps.map((step, index) => (
                   <div
                     key={index}
                     onMouseEnter={() =>
@@ -105,7 +134,8 @@ export default function AboutPageClient() {
               animate={{ x: ["0%", "-50%"] }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
             >
-              {[...TECH_STACK, ...TECH_STACK].map((tech, i) => (
+              {/* Doublement du tableau pour le défilement infini */}
+              {[...techStack, ...techStack].map((tech, i) => (
                 <div
                   key={i}
                   onClick={() =>

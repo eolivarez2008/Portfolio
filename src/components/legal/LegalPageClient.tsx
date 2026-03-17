@@ -16,7 +16,7 @@ export default function LegalPageClient() {
           Legal<span className="text-zinc-700">_</span>
         </h1>
         <p className="text-zinc-500 font-mono text-[10px] uppercase tracking-[0.3em]">
-          Dernière mise à jour : 28 Février 2026
+          Dernière mise à jour : 17 Février 2026
         </p>
       </motion.div>
 

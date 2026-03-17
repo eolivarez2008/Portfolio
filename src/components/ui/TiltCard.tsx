@@ -17,7 +17,6 @@ export default function TiltCard({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Détection du tactile pour désactiver l'effet sur mobile
   useEffect(() => {
     const checkTouch = () => {
       setIsMobile(
@@ -31,7 +30,6 @@ export default function TiltCard({
     return () => window.removeEventListener("resize", checkTouch);
   }, []);
 
-  // Configuration des valeurs de mouvement et ressort
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -39,11 +37,9 @@ export default function TiltCard({
   const xSpring = useSpring(x, springConfig);
   const ySpring = useSpring(y, springConfig);
 
-  // Calcul de la rotation selon la position de la souris
   const rotateX = useTransform(ySpring, [-0.5, 0.5], ["15deg", "-15deg"]);
   const rotateY = useTransform(xSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
 
-  // Mise à jour des coordonnées lors du mouvement
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current || isMobile) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -51,7 +47,6 @@ export default function TiltCard({
     y.set((e.clientY - rect.top) / rect.height - 0.5);
   };
 
-  // Reset de la position quand la souris sort
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);

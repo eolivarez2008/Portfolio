@@ -1,7 +1,15 @@
 "use client";
 import { motion } from "framer-motion";
 import { Briefcase, GraduationCap, MapPin, ArrowUpRight } from "lucide-react";
-import { JourneyItem } from "@/data/journeyData";
+
+export interface JourneyItem {
+  date: string;
+  title: string;
+  location: string;
+  description: string;
+  type: "work" | "edu";
+  skills: string[];
+}
 
 export function TimelineItem({
   item,
@@ -19,7 +27,6 @@ export function TimelineItem({
         index % 2 === 0 ? "md:flex-row-reverse" : ""
       }`}
     >
-      {/* Icône centrale */}
       <div className="absolute left-[31px] md:left-1/2 -translate-x-1/2 w-10 h-10 rounded-xl bg-white flex items-center justify-center z-20 shadow-[0_0_15px_rgba(255,255,255,0.3)]">
         <div className="text-black">
           {item.type === "work" ? (
@@ -30,7 +37,6 @@ export function TimelineItem({
         </div>
       </div>
 
-      {/* Carte */}
       <div className="w-[calc(100%-4.5rem)] md:w-[42%] ml-16 md:ml-0 group">
         <div className="glass-card p-6 md:p-8 rounded-[2rem] border border-white/10 bg-zinc-900/40 backdrop-blur-md hover:border-white/20 transition-colors">
           <div className="flex justify-between items-center mb-4 text-[9px] font-mono text-zinc-500 uppercase tracking-widest font-bold">

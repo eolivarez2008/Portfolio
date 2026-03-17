@@ -68,10 +68,12 @@ NEXT_PUBLIC_TURNSTILE_SITE_KEY=votre_cle_publique
 TURNSTILE_SECRET_KEY=votre_cle_secrete
 
 # Notifications Discord
-DISCORD_WEBHOOK_URL=votre_webhook_url
+DISCORD_CONTACT_WEBHOOK_URL=votre_webhook_url
+DISCORD_ADMIN_WEBHOOK_URL=votre_wekhook_url_2
 
 # Monitoring du serveur avec Uptime Kuma
-UPTIME_KUMA_URL=votre_utpime_kuma_url
+UPTIME_KUMA_URL=votre_uptime_kuma_url
+NEXT_PUBLIC_UPTIME_KUMA_PUBLIC_URL=votre_page_de_statut
 
 # ID Umami pour le suivi des visiteurs
 NEXT_PUBLIC_UMAMI_WEBSITE_ID=votre_id_umami
