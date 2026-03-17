@@ -64,8 +64,8 @@ export default function RootLayout({
       <head>
         <Script
           async
-          src="https://umami.realbus.fr/script.js"
-          data-website-id="882c953e-0838-4d1e-b05e-f2daced2d64f"
+          src="https://umami.eolivarez.site/script.js"
+          data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
           strategy="afterInteractive"
         />
       </head>

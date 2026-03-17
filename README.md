@@ -68,10 +68,13 @@ NEXT_PUBLIC_TURNSTILE_SITE_KEY=votre_cle_publique
 TURNSTILE_SECRET_KEY=votre_cle_secrete
 
 # Notifications Discord
-DISCORD_WEBHOOK_URL=votre-webhook_url
+DISCORD_WEBHOOK_URL=votre_webhook_url
 
 # Monitoring du serveur avec Uptime Kuma
-UPTIME_KUMA_URL=votre-utpime_kuma_url
+UPTIME_KUMA_URL=votre_utpime_kuma_url
+
+# ID Umami pour le suivi des visiteurs
+NEXT_PUBLIC_UMAMI_WEBSITE_ID=votre_id_umami
 ```
 
 4. Lancer le serveur de développement
