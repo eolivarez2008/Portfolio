@@ -46,7 +46,7 @@ export default function AdminClient() {
   }, []);
 
   const handleAuth = async () => {
-    const res = await fetch("/api/github/revalidate", {
+    const res = await fetch("/api/admin/auth", {
       method: "POST",
       headers: { "x-admin-secret": secret },
     });
