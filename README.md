@@ -64,6 +64,7 @@ npm install
 ### 3 — Configurer les variables d'environnement
 
 ```bash
+# Copier le fichier et remplacer les variables par les siennes
 cp .env.example .env
 ```
 
