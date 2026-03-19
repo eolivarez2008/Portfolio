@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     await writeFile(filePath, buffer);
     await chmod(filePath, 0o644);
 
-    const publicPath = `/api/file/uploads/${folder}/${safeName}`;
+    const publicPath = `/api/file/${folder}/${safeName}`;
 
     const displayName = file.name
       .replace(/\.pdf$/i, "")

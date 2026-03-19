@@ -4,10 +4,7 @@ import path from "path";
 
 export const dynamic = "force-dynamic";
 
-const ALLOWED_ROOTS = [
-  path.join(process.cwd(), "uploads"),
-  path.join(process.cwd(), "public"),
-];
+const ALLOWED_ROOTS = [path.join(process.cwd(), "uploads")];
 
 export async function GET(
   _req: NextRequest,
@@ -20,7 +17,9 @@ export async function GET(
     const decoded = decodeURIComponent(joined);
     const safePath = decoded
       .split("/")
-      .filter((seg) => seg !== ".." && seg !== "." && seg !== "")
+      .filter(
+        (seg) => seg !== ".." && seg !== "." && seg !== "" && seg !== "uploads",
+      )
       .join("/");
 
     let buffer: Buffer | null = null;
