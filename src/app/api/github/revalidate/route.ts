@@ -1,7 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
-// Endpoint de purge manuelle du cache GitHub
 export async function POST(req: NextRequest) {
   const secret = req.headers.get("x-admin-secret");
 

@@ -20,6 +20,7 @@ Le projet est entièrement containerisé et repose sur une architecture micro-se
 - **Infrastructure** : Docker & Docker Compose
 - **Serveur Web** : Nginx (Alpine)
 - **Tunneling & Sécurité** : Cloudflare Tunnel (Zero Trust)
+- **Base de données** : SQLite via Prisma ORM
 - **CI/CD** : Déploiement via Git & Docker Compose
 
 **Accès au site :** [https://eolivarez.site](https://eolivarez.site)  
@@ -30,62 +31,108 @@ Le projet est entièrement containerisé et repose sur une architecture micro-se
 
 Le projet s’appuie sur un environnement **full-stack React moderne**, orienté performance, typage strict et déploiement optimisé Edge.
 
-- **Framework React full-stack** : [Next.js 15+](https://nextjs.org/) — App Router, Server Components, routing basé sur le système de fichiers, optimisation automatique des performances (SSR / SSG / ISR).
-- **Langage** : [TypeScript](https://www.typescriptlang.org/) — Typage statique avancé, sécurité à la compilation, meilleure maintenabilité du code.
-- **Styling utility-first** : [Tailwind CSS](https://tailwindcss.com/) — Design system cohérent, classes utilitaires, responsive natif et optimisation du bundle.
-- **Animations & micro-interactions** : [Framer Motion](https://www.framer.com/motion/) — Animations déclaratives, transitions fluides, layout animations et orchestration avancée.
-- **Icônes SVG optimisées** : [Lucide React](https://lucide.dev/) — Bibliothèque d’icônes minimaliste, tree-shaking compatible.
-- **Web analytics** : [Umami](https://umami.is/) — Solution open-source d’analyse d’audience, légère et respectueuse de la vie privée, auto-hébergée.
-- **Hébergement & Infra** : [Docker](https://www.docker.com/) — Containerisation du site statique avec un serveur Nginx optimisé, auto-hébergé sur une VM dédiée.
-- **Réseau & Sécurité** : [Cloudflare Tunnel](https://www.cloudflare.com/products/tunnel/) — Exposition sécurisée du service sans ouverture de ports (Zero Trust), protection contre les attaques et gestion automatique du certificat SSL.
-- **Protection Formulaire** : [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) — Alternative respectueuse de la vie privée à reCAPTCHA, avec une intégration invisible pour l'utilisateur.
-- **Monitoring de Contact** : [Webhook Discord](https://support.discord.com/hc/fr/articles/228383668-Introduction-aux-Webhooks) — Système de notification instantané avec logs de transmission formatés (Style Console).
+- **Framework** : [Next.js 16](https://nextjs.org/) — App Router, Server Components, API Routes
+- **Langage** : [TypeScript](https://www.typescriptlang.org/) — Typage strict, interfaces centralisées dans `src/types/`
+- **Styling** : [Tailwind CSS](https://tailwindcss.com/) — Design system cohérent, responsive natif
+- **Animations** : [Framer Motion](https://www.framer.com/motion/) — Transitions fluides, layout animations
+- **Icônes** : [Lucide React](https://lucide.dev/) — SVG optimisés, tree-shaking compatible
+- **Base de données** : [Prisma ORM](https://www.prisma.io/) + SQLite — Schéma typé, migrations versionnées, audit log
+- **Analytics** : [Umami](https://umami.is/) — Auto-hébergé, sans cookie, RGPD compliant
+- **Hébergement** : [Docker](https://www.docker.com/) — Containerisation, auto-hébergé sur VM Debian dédiée
+- **Réseau** : [Cloudflare Tunnel](https://www.cloudflare.com/products/tunnel/) — Zero Trust, SSL automatique, protection DDoS
+- **Formulaire** : [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) — Anti-bot sans friction
+- **Notifications** : [Discord Webhooks](https://discord.com/developers/docs/resources/webhook) — Alertes contact et modifications admin en temps réel
+- **Monitoring** : [Uptime Kuma](https://uptime.kuma.pet/) — Surveillance des services auto-hébergés
 
 ---
 
 ## Installation et Configuration
 
-1. Clonage du projet
+### 1 — Cloner le projet
 
 ```bash
 git clone https://github.com/eolivarez2008/Portfolio.git
 cd Portfolio
 ```
 
-2. Installation des dépendances
+### 2 — Installer les dépendances
 
 ```bash
 npm install
 ```
 
-3. Configuration des variables d'environnement
-
-Création du fichier .env à la racine du projet
+### 3 — Configurer les variables d'environnement
 
 ```bash
-# Cloudflare Turnstile (Captcha)
-NEXT_PUBLIC_TURNSTILE_SITE_KEY=votre_cle_publique
-TURNSTILE_SECRET_KEY=votre_cle_secrete
-
-# Notifications Discord
-DISCORD_CONTACT_WEBHOOK_URL=votre_webhook_url
-DISCORD_ADMIN_WEBHOOK_URL=votre_wekhook_url_2
-
-# Monitoring du serveur avec Uptime Kuma
-UPTIME_KUMA_URL=votre_uptime_kuma_url
-NEXT_PUBLIC_UPTIME_KUMA_PUBLIC_URL=votre_page_de_statut
-
-# ID Umami pour le suivi des visiteurs
-NEXT_PUBLIC_UMAMI_WEBSITE_ID=votre_id_umami
+cp .env.example .env
 ```
 
-4. Lancer le serveur de développement
+### 4 — Initialiser la base de données
+
+```bash
+# Créer les tables
+npx prisma migrate dev --name init
+
+# Importer les données initiales
+npm run db:seed
+```
+
+### 5 — Lancer en développement
 
 ```bash
 npm run dev
 ```
 
-Le projet sera accessible sur http://localhost:3000
+Le projet sera accessible sur `http://localhost:3000`
+
+## Scripts disponibles
+
+```bash
+npm run dev          # Serveur de développement
+npm run build        # Build production
+npm run start        # Serveur production
+npm run lint         # Vérification ESLint
+npm run db:migrate   # Créer une migration Prisma
+npm run db:seed      # Importer les données initiales
+npm run db:studio    # Interface visuelle de la base de données
+npm run db:generate  # Régénérer le client Prisma
+```
+
+---
+
+## Déploiement Docker
+
+```bash
+# Build et démarrage
+docker compose build --no-cache
+docker compose up -d
+
+# Logs
+docker logs portfolio --tail 50
+
+# Arrêt
+docker compose down
+```
+
+Les données persistantes sont stockées dans :
+
+- `./uploads/` — fichiers PDF uploadés via l'admin
+- `./prisma/database.db` — base de données SQLite
+
+---
+
+## Panel Admin
+
+Accessible sur `/admin`. Protégé par `ADMIN_SECRET`.
+
+Permet de modifier sans redéploiement :
+
+- **About** — tech stack et roadmap
+- **Parcours** — entrées timeline et archives de bulletins
+- **Site** — hero, citations, expertise grid et biographie
+- **Legal** — mentions légales, RGPD et politique cookies
+- **Status** — mapping des services Uptime Kuma
+- **GitHub** — purge manuelle du cache des dépôts
 
 ---
 
@@ -98,8 +145,8 @@ Lycée Louis de Cormontaigne, Metz
 
 ## Licence
 
-Ce projet est sous licence **MIT**.
 Vous pouvez :
+Ce projet est sous licence **MIT**.
 
 - utiliser librement les fichiers,
 - les modifier,

@@ -14,39 +14,34 @@ interface ExpertiseItem {
 }
 
 export default function ExpertiseGrid() {
-  const [services, setServices] = useState<ExpertiseItem[]>([
-    {
-      title: "Web Dev",
-      description:
-        "Interfaces modernes avec Next.js, React et des animations fluides.",
-      icon: "Code2",
-    },
-    {
-      title: "Game Dev",
-      description: "Conception d'expériences interactives sur Unity 6.",
-      icon: "Gamepad2",
-    },
-    {
-      title: "UI/UX Design",
-      description:
-        "Design minimaliste et efficace pour une expérience optimale.",
-      icon: "Layers",
-    },
-    {
-      title: "Systèmes CIEL",
-      description: "Informatique réseaux et systèmes embarqués.",
-      icon: "Cpu",
-    },
-  ]);
+  const [services, setServices] = useState<ExpertiseItem[] | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/site-content")
       .then((r) => r.json())
-      .then((d) => {
-        if (d.expertise) setServices(d.expertise);
-      })
-      .catch(() => {});
+      .then((d) => setServices(d.expertise ?? []))
+      .catch(() => setServices([]));
   }, []);
+
+  if (services === null) {
+    return (
+      <section className="py-20 md:py-32 px-6">
+        <div className="max-w-6xl mx-auto">
+          <SectionHeader label="Expertise" title="Skills & Services" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+            {Array(4)
+              .fill(0)
+              .map((_, i) => (
+                <div
+                  key={i}
+                  className="h-48 bg-zinc-900/50 animate-pulse rounded-[2rem] border border-white/5"
+                />
+              ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-20 md:py-32 px-6">

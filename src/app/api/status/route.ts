@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { readFile } from "fs/promises";
-import path from "path";
+import { getSection } from "@/lib/sections";
+import type { StatusConfig } from "@/types";
 
 export const dynamic = "force-dynamic";
 
@@ -15,18 +15,6 @@ interface UptimeKumaResponse {
   heartbeatList: Record<string, KumaHeartbeat[]>;
 }
 
-async function getIdMap(): Promise<Record<string, string>> {
-  try {
-    const raw = await readFile(
-      path.join(process.cwd(), "public/data/statusConfig.json"),
-      "utf-8",
-    );
-    return JSON.parse(raw).idMap ?? {};
-  } catch {
-    return {};
-  }
-}
-
 export async function GET() {
   try {
     const kumaUrl = process.env.UPTIME_KUMA_URL;
@@ -38,13 +26,13 @@ export async function GET() {
       );
     }
 
-    const [response, ID_MAP] = await Promise.all([
-      fetch(kumaUrl, {
-        next: { revalidate: 30 },
-        headers: { "User-Agent": "eolivarez-portfolio-monitor" },
-      }),
-      getIdMap(),
-    ]);
+    const config = await getSection<StatusConfig>("statusConfig");
+    const ID_MAP = config?.idMap ?? {};
+
+    const response = await fetch(kumaUrl, {
+      next: { revalidate: 30 },
+      headers: { "User-Agent": "eolivarez-portfolio-monitor" },
+    });
 
     if (!response.ok) {
       throw new Error("Uptime Kuma est injoignable");

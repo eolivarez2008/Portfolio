@@ -5,7 +5,6 @@ import { Footer } from "@/components/shared/Footer";
 import "./globals.css";
 import Script from "next/script";
 
-// Configuration des polices Google
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -18,7 +17,6 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
-// Définition des métadonnées pour le SEO et l'indexation
 export const metadata: Metadata = {
   metadataBase: new URL("https://eolivarez.site"),
   title: {
@@ -52,14 +50,12 @@ export const metadata: Metadata = {
   },
 };
 
-// Layout racine de l'application
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    // Requis pour next-themes pour empecher les problèmes d'hydratation
     <html lang="fr" suppressHydrationWarning>
       <head>
         <Script

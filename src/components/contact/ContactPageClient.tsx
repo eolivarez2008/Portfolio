@@ -86,7 +86,7 @@ export default function ContactPageClient() {
 
   return (
     <main className="min-h-screen pt-32 pb-32 px-6 max-w-4xl mx-auto text-white selection:bg-white selection:text-black">
-      {/* Affichage titre page et infos de base (mail, ville) */}
+      {/* Affichage titre page et coordonées */}
       <section className="text-center mb-16 space-y-8">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -102,8 +102,8 @@ export default function ContactPageClient() {
           className="text-zinc-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed"
         >
           Un projet en tête, une question technique ou juste envie de discuter
-          infra et dev ? Mon terminal est toujours ouvert. Remplis le
-          formulaire, je vous réponds dans les plus brefs délais.
+          infra et dev ? Mon terminal est toujours ouvert. Remplis le formulaire
+          et vous aurez une réponse dans les plus brefs délais.
         </motion.p>
 
         <div className="flex flex-wrap justify-center gap-4">

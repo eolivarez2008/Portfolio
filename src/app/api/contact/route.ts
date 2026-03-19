@@ -2,11 +2,9 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    // 1. Extraction et protection contre le body vide
     const body = await req.json().catch(() => ({}));
     const { name, email, message, captchaToken } = body;
 
-    // 2. Validation de présence et de longueur
     const cleanName = name?.trim() || "";
     const cleanEmail = email?.trim() || "";
     const cleanMessage = message?.trim() || "";
@@ -25,7 +23,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // 3. Validation Regex de l'Email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (
       !cleanEmail ||
@@ -38,7 +35,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // 4. Vérification Cloudflare Turnstile
     if (!captchaToken) {
       return NextResponse.json({ error: "Captcha manquant." }, { status: 400 });
     }
@@ -64,13 +60,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // 5. Préparation du payload Discord avec Sanitization
     const safeMessage = cleanMessage.replace(/`/g, "'");
 
     const discordPayload = {
       username: "Portfolio Sentinel",
       avatar_url: "https://eolivarez.site/favicon.ico",
-      content: "@everyone Nouveau message de contact reçu !",
+      content: "<@&1483836726429356123> Nouveau message de contact reçu !",
       embeds: [
         {
           title: "Nouveau formulaire de contact reçu",
@@ -86,7 +81,6 @@ export async function POST(req: Request) {
       ],
     };
 
-    // 6. Envoi au Webhook avec Timeout
     const discordRes = await fetch(process.env.DISCORD_CONTACT_WEBHOOK_URL!, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
